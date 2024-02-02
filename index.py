@@ -2,13 +2,13 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+import random as rd
+rd.seed()
+cores_nodes = ['red', 'blue', 'black', '#0D1321', '#FE5F55', '#8A1C7C', 'black']
+cores_text = ['black', 'whitesmoke', 'whitesmoke', '#F7F7FF', 'black', 'whitesmoke', 'white']
+ind_cor = rd.randint(0, len(cores_nodes) - 1)
 G = dict()
-# G.add_edge("1", "2", weight=3)
-# G.add_edge("1", "3", weight=3)
-# G.add_edge("2", "3", weight=3)
-# plt.figure(1)
-# nx.draw_networkx(G, pos=nx.spring_layout(G), with_labels=True)
-# plt.savefig("graf.png", format="png")
+
 with open("./index.txt") as file:
     qtd_vertices = int(file.readline())
     for i in range(qtd_vertices):
@@ -28,43 +28,23 @@ with open("./index.txt") as file:
     plt.figure(1)
     
     pesos = nx.get_edge_attributes(Grafo_adj, "weight")
-    nodos_nomes = nx.get_node_attributes(Grafo_adj, "name")
+    nodos_size = [len(label) * 300 for label in G.values()]
     #print(nodos_nomes)
-    pos = nx.spring_layout(Grafo_adj)
+    # modo spring, de mola
+    #pos = nx.spring_layout(Grafo_adj)
 
-    nx.draw(Grafo_adj, pos=pos, with_labels=True)
+    # modo circular 
+    #pos = nx.circular_layout(Grafo_adj)
+    # forma planar, sem os edges se cuzarem 
+    pos = nx.planar_layout(Grafo_adj) 
+    # n sei oque é shell
+    #pos = nx.shell_layout(Grafo_adj) 
+    nx.draw(Grafo_adj, pos=pos, node_size=nodos_size, node_color=cores_nodes[ind_cor])
     
-    #nx.draw_networkx_labels(Grafo_adj, pos=pos, labels=nomes_nodo, font_size=10, font_color='red')
+    nx.draw_networkx_labels(Grafo_adj, pos=pos, font_size=10, font_color=cores_text[ind_cor])
 
     for edge, w in pesos.items():
         nx.draw_networkx_edge_labels(Grafo_adj, pos=pos, edge_labels={(edge[0], edge[1]) : w})
     plt.savefig("Grafo_matriz.png", format='png')
 
 
-
-
-
-
-
-
-# plt.figure(1)
-# nx.draw_networkx(G, pos=nx.spring_layout(G), with_labels=True)
-# plt.savefig("graf.png", format="png")
-
-# desenha o grafo do jeito que eu quero
-# m = np.array([[0, 3, 0, 0, 0, 0, 0],
-#               [0, 0, 1, 0, 0, 0, 0],
-#               [0, 0, 0, 1, 0, 0, 0],
-#               [0, 0, 0, 0, 4, 0, 0],
-#               [0, 0, 0, 0, 0, 0, 3],
-#               [0, 0, 0, 0, 0, 0, 0],
-#               [0, 0, 0, 0, 0, 1, 0]])
-# matriz = nx.DiGraph(m)
-# plt.figure(1)
-# pesos = nx.get_edge_attributes(matriz, "weight")
-# pos = nx.spring_layout(matriz)
-# nx.draw_networkx(matriz, pos=pos, with_labels=True)
-# for edge, weitgth in pesos.items():
-#     nx.draw_networkx_edge_labels(matriz, pos=pos, edge_labels={(edge[0], edge[1]): weitgth})
-    
-# plt.savefig("grafo.png", format='png')
