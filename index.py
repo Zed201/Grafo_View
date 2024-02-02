@@ -2,7 +2,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
-G = nx.Graph()
+G = dict()
 # G.add_edge("1", "2", weight=3)
 # G.add_edge("1", "3", weight=3)
 # G.add_edge("2", "3", weight=3)
@@ -12,23 +12,39 @@ G = nx.Graph()
 with open("./index.txt") as file:
     qtd_vertices = int(file.readline())
     for i in range(qtd_vertices):
-        node = str(file.readline()).replace("\n", "")
-        G.add_node(node)
+        node = str(file.readline()).strip()
+        #print(node)
+        G[i] = node
     # agora pega a matriz
+    #print(G)
     Mtmp = np.zeros((qtd_vertices, qtd_vertices))
     for i in range(qtd_vertices):
-        linha =  file.readline().split(" ")
+        linha =  file.readline().strip().split()
         for index, el in enumerate(linha):
-            Mtmp[i][index] = int(el.replace("\n", ""))
+            Mtmp[i][index] = int(el)
     Grafo_adj = nx.DiGraph(Mtmp)
-    print(Mtmp)
+    Grafo_adj = nx.relabel_nodes(Grafo_adj, G, 'name')
+    #print(Mtmp)
     plt.figure(1)
+    
     pesos = nx.get_edge_attributes(Grafo_adj, "weight")
+    nodos_nomes = nx.get_node_attributes(Grafo_adj, "name")
+    #print(nodos_nomes)
     pos = nx.spring_layout(Grafo_adj)
-    nx.draw_networkx(Grafo_adj, pos=pos, with_labels=True)
+
+    nx.draw(Grafo_adj, pos=pos, with_labels=True)
+    
+    #nx.draw_networkx_labels(Grafo_adj, pos=pos, labels=nomes_nodo, font_size=10, font_color='red')
+
     for edge, w in pesos.items():
         nx.draw_networkx_edge_labels(Grafo_adj, pos=pos, edge_labels={(edge[0], edge[1]) : w})
     plt.savefig("Grafo_matriz.png", format='png')
+
+
+
+
+
+
 
 
 # plt.figure(1)

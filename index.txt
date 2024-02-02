@@ -1,11 +1,11 @@
 7
-1
-2
-3
-4
-5
-6
-7
+um
+dois
+tres
+quatro
+cinco
+seix
+seven
 0 3 2 0 4 0 0 
 3 0 1 0 0 2 0 
 0 0 0 1 0 0 0 
