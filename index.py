@@ -17,6 +17,7 @@ ind_cor = rd.randint(0, len(cores_nodes) - 1)
 def leitura(file_name):
     Nomes_index = dict()
     with open("./{0}".format(file_name)) as file:
+        resu_fina = str(file.readline()).strip()
         vertices_td = int(file.readline())
         for i in range(vertices_td):
             node_tmp = str(file.readline()).strip()
@@ -26,9 +27,14 @@ def leitura(file_name):
             linha = file.readline().strip().split()
             for ind, el in enumerate(linha):
                 Matriz[i][ind] = int(el)
-    return (Matriz, Nomes_index)    
+    return (Matriz, Nomes_index, resu_fina)    
 
 def Draw(img_name, Matriz, nomes_grafo):
+    # o Grafo é escolhido na linha de baixo, podemos usar:
+    # nx.Graph para nao direcionado ponderados
+    # nx.DiGraph para ponderados e direcionados
+    # nx.MultiGraph para multigrafos nao direcionados (nao funciona direito)
+    # nx.MultiDigraph, para multigrafos direcionados(nao funciona direito, pois as multiplas arestas parecem nao funcionar com matrizes)
     Grafo = nx.relabel_nodes(nx.DiGraph(Matriz), nomes_grafo, 'name')
     plt.figure(1)
     pesos = nx.get_edge_attributes(Grafo, "weight")
@@ -37,9 +43,9 @@ def Draw(img_name, Matriz, nomes_grafo):
     #print(nomes)
     #print(pesos)
     posi = nx.spring_layout(Grafo)             # modo spring, de mola
-    #posi = nx.circular_layout(Grafo_adj)     # modo circular
-    #posi = nx.planar_layout(Grafo_adj)     # forma planar, sem os edges se cuzarem
-    #posi = nx.shell_layout(Grafo_adj)    # n sei oque é shell
+    #posi = nx.circular_layout(Grafo)     # modo circular
+    #posi = nx.planar_layout(Grafo)     # forma planar, sem os edges se cuzarem
+    #posi = nx.shell_layout(Grafo)    # n sei oque é shell
 
     nx.draw(Grafo, pos=posi, node_size=nodos_size, node_color=cores_nodes[ind_cor])
 
@@ -49,5 +55,5 @@ def Draw(img_name, Matriz, nomes_grafo):
         nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
     plt.savefig("./{0}.png".format(img_name), format='png')
 
-matrix, nomes = leitura("index.txt")
-Draw("test", matrix, nomes)
+matrix, nomes_nds, final_path = leitura("index.txt")
+Draw(final_path, matrix, nomes_nds)
