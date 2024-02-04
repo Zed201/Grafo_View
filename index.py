@@ -4,6 +4,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import random as rd
+import sys
 
 # coisas para cores, para selecionar cores de destaque nos nodos e nos lables
 rd.seed()
@@ -15,7 +16,7 @@ ind_cor = rd.randint(0, len(cores_nodes) - 1)
 def leitura(file_name):
     # cria um dict que vai ser retornado e serve para adiiconar os labels ao grafo
     Nomes_index = dict()
-    with open("./{0}".format(file_name)) as file:
+    with open(file_name) as file:
         # o nome final do arquivo
         resu_fina = str(file.readline()).strip()
         vertices_td = int(file.readline())
@@ -52,8 +53,8 @@ def Draw(img_name, Matriz, nomes_grafo):
     #print(pesos)
 
     # tipos de layouts que dizem respetto a distribuição dos nodos
-    posi = nx.spring_layout(Grafo)             # modo spring, de mola
-    #posi = nx.circular_layout(Grafo)     # modo circular
+    #posi = nx.spring_layout(Grafo)             # modo spring, de mola
+    posi = nx.circular_layout(Grafo)     # modo circular
     #posi = nx.planar_layout(Grafo)     # forma planar, sem os edges se cuzarem
     #posi = nx.shell_layout(Grafo)    # n sei oque é shell
 
@@ -65,7 +66,8 @@ def Draw(img_name, Matriz, nomes_grafo):
     for edge, w in pesos.items():
         nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
     # salvamento da imagem
-    plt.savefig("./{0}.png".format(img_name), format='png')
+    plt.savefig("./images/{0}.png".format(img_name), format='png')
 
-matrix, nomes_nds, final_path = leitura("index.txt")
+matrix, nomes_nds, final_path = leitura("./dados/{0}.txt".format(sys.argv[1]))
 Draw(final_path, matrix, nomes_nds)
+

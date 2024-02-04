@@ -6,6 +6,7 @@
 #include <optional>
 #include <stack>
 #include <queue>
+#include <fstream>
 
 using namespace std;
 
@@ -113,12 +114,12 @@ class GrafoMatriz{
                         
                 }
 
-                void print(){
-                        this->print(this->graph);
+                string print(){
+                       return  this->print(this->graph, "print_normal");
                 }
 
                 // print difernet do original para estar no formato certo
-                void print(int **printable){
+                string  print(int **printable, string f_line){
                         /*printf("   ");
                         for(int i = 0; i < this->qtdNodo; i++){
                                 printf("%d ", i);
@@ -129,22 +130,29 @@ class GrafoMatriz{
                         }*/
                         //printf("\n");
                         //int i = 0;
-                        printf("%d\n", this->qtdNodo);
+                        string resultado;
+                        //printf("%d\n", this->qtdNodo);
+                        resultado += f_line + "\n";
+                        resultado += to_string(this->qtdNodo) + "\n";
                         vector<string>::iterator l = this->nodos.begin();
                         while(l != this->nodos.end()){
-                                printf("%s\n", (*l).c_str());
+                                //printf("%s\n", (*l).c_str());
+                                resultado += (*l) + "\n";
                                 ++l;
                         }
                        
                         for(int j = 0; j < this->qtdNodo; j++){
                                 //printf("%d| ", j);
                                 for(int k = 0; k < this->qtdNodo; k++){
-                                        printf("%d ", printable[j][k]);
+                                        //printf("%d ", printable[j][k]);
+                                        resultado += to_string(printable[j][k]) + " ";
                                 }
-                                printf("\n");
+                                //printf("\n");
+                                resultado += "\n";
                         }
                         //printf("Vetores:\n");
-                                        }
+                        return resultado;
+                }
                 // inicializa tanto a tabela de mark e o novo grafo em matriz da arvore
                 void setMark(){
                         if(this->mark != nullptr){
@@ -168,10 +176,23 @@ class GrafoMatriz{
                                 }
                         }
                 }
+                int tmpi = 0;
+                // usado para imprimri a matriz com certo nome e ja executar ele 
+               void save(){
+                       string tmp = "Grafo_";
+                       tmp += to_string(this->tmpi++);
+                       string mtx = this->print(this->ret, tmp);
+                       string pafi = "./dados/" + tmp + ".txt";
+                       fstream file(pafi, ios::out);
+                       file << mtx;
+                       file.close();
+                       string comando = "python3 index.py " + tmp;
+                       system(comando.c_str());
+               }
 
                 // ver o retorno, para ser aluma coisa de ponteiro, como uma matriz resultado da busca
                 // TODO: ponto de partida personalizado
-                void TranverseDFS(){
+                string TranverseDFS(){
                     this->setMark();
                     for(int i = 0; i < this->qtdNodo; i++){
                         if(mark[i] == false){
@@ -179,7 +200,7 @@ class GrafoMatriz{
                         }
                     }
                     //printf("Resultado do DFS\n");
-                    this->print(this->ret);
+                    return this->print(this->ret, "DFS");
                 }
 
                 void DFS(int nodoIndex){
@@ -194,6 +215,7 @@ class GrafoMatriz{
                             // provavelmente fazer algo por aque
                             // vai de nodoIndex para w, do pai para o filho
                             this->ret[nodoIndex][w] = this->graph[nodoIndex][w];
+                            this->save();
                             this->DFS(w);
                         }
                         w = this->next(nodoIndex, w);
@@ -219,7 +241,7 @@ class GrafoMatriz{
                     return this->qtdNodo;
                 }
 
-                void TranverseBFS(){
+                string TranverseBFS(){
                         this->setMark();
                         for(int i = 0; i < this->qtdNodo; i++){
                                 // TODO: Trocar as verificacoes por !
@@ -228,7 +250,7 @@ class GrafoMatriz{
                                 }
                         }
                        // printf("Matriz de retorno de BFS\n");
-                        this->print(this->ret);
+                        return this->print(this->ret, "BFS");
                 }
                 
                 void BFS(int start){
@@ -250,6 +272,7 @@ class GrafoMatriz{
                                                 //cout << this->Int_Str(w) << endl;
                                                 // o caminho vai de v para w, pois v e tirado da fila e w surge a parit de v
                                                 this->ret[v][w] = this->graph[v][w];
+                                                this->save();
                                                 q.push_back(w);
                                         }
                                         w = this->next(v, w);

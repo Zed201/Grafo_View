@@ -1,5 +1,6 @@
 // so preguica de criar o .h
 #include "./GMatriz.cpp"
+#include <fstream>
 // basicamente nesse cpp descrevemos o grafo e a operacao
 // eles elasa Tranverse de DFS e o de BSf, alem do print normal, e dps dijkstra
 
@@ -16,8 +17,15 @@ int main(int argv, char** argc){
         grafu.Add("8", { });
         grafu.Add("9", { });
         // so compilar e passar como argumento o nome do file final, o python vai cuidar de tudo
-        printf("%s\n", argc[1]);
-        grafu.TranverseDFS();
+        //printf("%s\n", argc[1]);
+        cout << grafu.TranverseBFS();
+        //string file_path;
+        /*file_path += argc[1];
+        file_path += ".txt";
+        fstream file(file_path, ios::out);
+        file << grafu.TranverseBFS();
+        file.close();*/
+        //system("python3 index.py inde");
         
         return 0;
 }
