@@ -7,10 +7,12 @@ import random as rd
 import sys
 
 # coisas para cores, para selecionar cores de destaque nos nodos e nos lables
+# para geracoes aleatorias funciona legal, mas para gifs nao funciona tanto
 rd.seed()
 cores_nodes = ['red', 'blue', 'black', '#0D1321', '#FE5F55', '#8A1C7C', 'black']
 cores_text = ['black', 'whitesmoke', 'whitesmoke', '#F7F7FF', 'black', 'whitesmoke', 'white']
 ind_cor = rd.randint(0, len(cores_nodes) - 1)
+ind_cor = 2
 
 # Funciona para ler um file.txt e retorna a matriz de numpy e o dict com os nomes e os "index's"
 def leitura(file_name):
@@ -41,7 +43,7 @@ def Draw(img_name, Matriz, nomes_grafo):
     # nx.MultiDigraph, para multigrafos direcionados(nao funciona direito, pois as multiplas arestas parecem nao funcionar com matrizes)
     # cria o grafo em si, e passa o dict como os labels deles
     Grafo = nx.relabel_nodes(nx.DiGraph(Matriz), nomes_grafo, 'name')
-    plt.figure(1)
+    plt.figure(1, figsize=(8,6))
     # pega os atributos name e pesos
     pesos = nx.get_edge_attributes(Grafo, "weight")
     nomes = nx.get_node_attributes(Grafo, "name")

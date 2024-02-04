@@ -1,7 +1,7 @@
 n ?= test
 all:
 	@g++ index.cpp
-	@./a.out $(n) > index.txt
-	@cat index.txt
-	@python3 index.py
-	img $(n).png
+	@rm -rf ./dados/*.txt
+	@rm -rf ./images/*.png
+	@./a.out
+	@python3 gif.py
