@@ -1,7 +1,7 @@
-n ?= test
 all:
 	@g++ index.cpp
-	@rm -rf ./dados/*.txt
+	@mkdir -p images
 	@rm -rf ./images/*.png
 	@./a.out
 	@python3 gif.py
+	@echo "feito"

@@ -1,5 +1,3 @@
-# graficos salvando onde deve
-# Tentar criar algum gif com o python e os estagios de cada busca
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,7 +18,6 @@ def leitura(file_name):
     Nomes_index = dict()
     with open(file_name) as file:
         # o nome final do arquivo
-        resu_fina = str(file.readline()).strip()
         vertices_td = int(file.readline())
         # leitura tanto dos nomes do nos e depois da matriz, np array no caso, respetivamente
         for i in range(vertices_td):
@@ -31,7 +28,7 @@ def leitura(file_name):
             linha = file.readline().strip().split()
             for ind, el in enumerate(linha):
                 Matriz[i][ind] = int(el)
-    return (Matriz, Nomes_index, resu_fina)    
+    return (Matriz, Nomes_index)    
 
 # funcao que passa o nome apenas do arquivo png final, a matriz de adjascencia e o dict dos nomes dos grafos
 def Draw(img_name, Matriz, nomes_grafo):
@@ -70,6 +67,6 @@ def Draw(img_name, Matriz, nomes_grafo):
     # salvamento da imagem
     plt.savefig("./images/{0}.png".format(img_name), format='png')
 
-matrix, nomes_nds, final_path = leitura("./dados/{0}.txt".format(sys.argv[1]))
-Draw(final_path, matrix, nomes_nds)
+matrix, nomes_nds = leitura("./{0}.txt".format(sys.argv[1]))
+Draw(sys.argv[2], matrix, nomes_nds)
 
