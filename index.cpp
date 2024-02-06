@@ -1,8 +1,7 @@
-// so preguica de criar o .h
-#include "./GMatriz.cpp"
-#include <fstream>
-// basicamente nesse cpp descrevemos o grafo e a operacao
-// eles elasa Tranverse de DFS e o de BSf, alem do print normal, e dps dijkstra
+#include <iostream>
+#include "./GMatriz.hpp"
+
+using namespace std;
 
 int main(int argv, char** argc){
         GrafoMatriz grafu({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
@@ -16,8 +15,7 @@ int main(int argv, char** argc){
         grafu.Add("7", {{"8", 1}, {"9", 1} });
         grafu.Add("8", {{"0", 1}, {"6", 1} });
         grafu.Add("9", {{"0", 1} });
-
-        //grafu.TranverseDFS("3", 1);
-        cout << grafu.print(1);
+        
+        cout << grafu.TranverseDFS("0", true);
         return 0;
 }

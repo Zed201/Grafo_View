@@ -1,11 +1,11 @@
-
-
-# gerada com o uso do vscode
-.vscode/
 # gerada com o vim
 .ccls-cache/
 
-# imagens especificamente
+# dados
+./imagens/*.png
+*.txt
+
+# imagens e gif especificamente
 *.png
 *.jpeg
 *.gif
