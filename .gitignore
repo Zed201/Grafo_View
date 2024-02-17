@@ -9,3 +9,9 @@
 *.png
 *.jpeg
 *.gif
+
+# cmake/make files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
