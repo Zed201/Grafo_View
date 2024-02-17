@@ -21,9 +21,11 @@ GrafoMatriz::GrafoMatriz() : qtdNodo(0), tmpi(0), png(false), graph(nullptr), re
 void GrafoMatriz::addVertex(std::string n1){
         this->qtdNodo++;
         this->nodos.push_back(n1);
+        //cout << n1 << " criado" << endl;
 }
 
 void GrafoMatriz::Generate(){
+        //cout << this->qtdNodo << " nodos total" << endl;
         this->graph = (int **) malloc(this->qtdNodo * sizeof(int *));
         for(int i = 0; i < this->qtdNodo; i++){
                 this->graph[i] = (int *) malloc(sizeof(int) * this->qtdNodo);
@@ -31,6 +33,7 @@ void GrafoMatriz::Generate(){
                         this->graph[i][j] = 0;
                 }
         }
+        //cout << "maloc finalizado" << endl;
 }
 
 GrafoMatriz::~GrafoMatriz(){
@@ -91,9 +94,13 @@ bool GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){
         return false;
 }
 
-void GrafoMatriz::Add(std::string nodo, std::initializer_list<std::pair<std::string, std::optional<int>>> pares){
-        int i_nodo = this->Str_Int(nodo);
-        for (std::pair<std::string, std::optional<int>> i : pares)
+// nodo1--[peso]=->nodo2
+void GrafoMatriz::Add(std::string nodo1, int peso, std::string nodo2){
+        //printf("foi 2\n");
+        int n1 = this->Str_Int(nodo1), n2 = this->Str_Int(nodo2);
+        this->graph[n1][n2] = peso;
+
+        /*for (std::pair<std::string, std::optional<int>> i : pares)
         {
                 if (i.second.has_value())
                 {
@@ -103,7 +110,7 @@ void GrafoMatriz::Add(std::string nodo, std::initializer_list<std::pair<std::str
                 {
                         this->graph[i_nodo][this->Str_Int(i.first)] = 0;
                 }
-        }
+        }*/
 }
 void GrafoMatriz::remove(std::string nodo){
         int i = this->Str_Int(nodo);
@@ -129,13 +136,14 @@ void GrafoMatriz::remove(std::string nodo){
 }
 std::string GrafoMatriz::print(bool png){
         this->png = false;
+        // desativao no momento ate fazer a integracao
         std::string tmp = this->print(this->graph);
-        std::fstream file("./Matriz.txt", std::ios::out);
+        /*std::fstream file("./Matriz.txt", std::ios::out);
         file << tmp;
         file.close();
-        std::string comando = "python3 index.py Matriz Grafo_print";
+        //std::string comando = "python3 index.py Matriz Grafo_print";
         std::cout << comando << std::endl;
-        system(comando.c_str());
+        system(comando.c_str());*/
         return tmp;
 }
 
@@ -189,6 +197,8 @@ void GrafoMatriz::setMark(){
 }
 
 void GrafoMatriz::save(){
+        // ! Desativado por hora, ate implementar todo o resultado
+        /* 
         std::string mtx = this->print(this->ret);
         std::fstream file("./Matriz.txt", std::ios::out);
         file << mtx;
@@ -196,6 +206,7 @@ void GrafoMatriz::save(){
         std::string comando = "python3 index.py Matriz Grafo_" + std::to_string(this->tmpi++);
         std::cout << comando <<std:: endl;
         system(comando.c_str());
+        */
 }
 
 int GrafoMatriz::first(int v){
@@ -320,13 +331,81 @@ static PyObject* createC(PyObject* self, PyObject* args){
         return PyCapsule_New(ptr, NULL, des);
 }
 
-//static PyObject* addVextex
+//recebe o grafo em si e a string
+static PyObject* addVextex(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        const char* str;
+        if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
+        ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->addVertex(str);
+        return Py_BuildValue("");
+}
 
+// recebe o grafo, o n1, o peso e o n2
+static PyObject* addPeso(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        const char *str, *str2;
+        int peso;
+        //printf("foi\n");
+        if(!PyArg_ParseTuple(args, "Osis", &ptr, &str, &peso, &str2)){return NULL;}
+        ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->Add(str, peso, str2);
+        return Py_BuildValue("");
+}
+// so para pssar no final e criar a matriz em si
+static PyObject* Generate(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
+        ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->Generate();
+        return Py_BuildValue("");
+}
 
+static PyObject* print(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
+
+        // TODO: Implementar a parte do png, no momento so ta false
+        printf("%s",((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->print(false).c_str());
+        return Py_BuildValue("");
+}
+
+static PyObject* DFS(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        const char *str;
+        if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
+
+        // TODO: Implementar a parte do png, no momento so ta false
+        printf("%s",((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, false).c_str());
+        return Py_BuildValue("");
+}
+
+static PyObject* BFS(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        const char *str;
+        if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
+
+        // TODO: Implementar a parte do png, no momento so ta false
+        printf("%s",((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, false).c_str());
+        return Py_BuildValue("");
+}
+
+static PyObject* remove(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        const char *str;
+        if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
+
+        ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->remove(str);
+        return Py_BuildValue("");
+}
 static PyMethodDef lib_methods[] = {
 
         {"create", createC, METH_VARARGS, "Funcao de criaçao"},
+        {"addVertice", addVextex, METH_VARARGS, "Adiciona os vertices"},
+        {"addPeso", addPeso, METH_VARARGS, "Adiciona os pesos na matriz"},
+        {"generate", Generate, METH_VARARGS, "Finaliza a adição dos vertices"},
+        {"print", print, METH_VARARGS, "Printa a matriz e a lista de vertices"},
+        {"remove", remove, METH_VARARGS, "Remove determinado vertice"},
+        {"DFS", DFS, METH_VARARGS, "DFS"},
+        {"BFS", BFS, METH_VARARGS, "BFS"},
         {NULL, NULL, 0, NULL}
 };
 
