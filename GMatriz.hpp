@@ -25,8 +25,10 @@ class GrafoMatriz{
         int Str_Int(std::string nodo);
         std::string Int_Str(int nodo_index);
         bool isIn(std::string nodo, std::vector<std::string> vec);
+        void addVertex(std::string n1);
+        void Generate();
     public:
-        GrafoMatriz(std::initializer_list<std::string> nodos);
+        GrafoMatriz();
         ~GrafoMatriz();
 
         void Add(std::string nodo, std::initializer_list<std::pair<std::string, std::optional<int>>> pares);

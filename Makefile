@@ -1,13 +1,5 @@
+py_h=$(shell pkg-config --cflags python3)
+CFLAGS += $(py_h)
 all:
-	@g++ index.cpp Grafo.cpp
-	@mkdir -p images
-	@rm -rf ./images/*.png
-	@./a.out
-	
-gif:
-	@python3 gif.py
-	@echo "feito"
-
-re:
-	@rm -rf ./images/*.png *.txt *.gif index ./*.out
-	
+	@clear
+	g++ Grafo.cpp -shared -fPIC $(CFLAGS) -o graph.so
