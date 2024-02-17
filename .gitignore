@@ -3,7 +3,7 @@
 
 # dados
 ./imagens/*.png
-*.txt
+Grafo*.txt
 
 # imagens e gif especificamente
 *.png
@@ -11,3 +11,7 @@
 *.gif
 
 # cmake/make files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
