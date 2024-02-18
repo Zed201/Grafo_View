@@ -137,14 +137,13 @@ void GrafoMatriz::remove(std::string nodo){
 std::string GrafoMatriz::print(bool png){
         this->png = false;
         // desativao no momento ate fazer a integracao
-        std::string tmp = this->print(this->graph);
+        return this->print(this->graph);
         /*std::fstream file("./Matriz.txt", std::ios::out);
         file << tmp;
         file.close();
         //std::string comando = "python3 index.py Matriz Grafo_print";
         std::cout << comando << std::endl;
         system(comando.c_str());*/
-        return tmp;
 }
 
 std::string GrafoMatriz::print(int **printable){
@@ -364,8 +363,8 @@ static PyObject* print(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
 
         // TODO: Implementar a parte do png, no momento so ta false
-        printf("%s",((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->print(false).c_str());
-        return Py_BuildValue("");
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->print(false).c_str());
+        
 }
 
 static PyObject* DFS(PyObject* self, PyObject* args){
@@ -374,8 +373,7 @@ static PyObject* DFS(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
         // TODO: Implementar a parte do png, no momento so ta false
-        printf("%s",((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, false).c_str());
-        return Py_BuildValue("");
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, false).c_str());
 }
 
 static PyObject* BFS(PyObject* self, PyObject* args){
@@ -384,8 +382,7 @@ static PyObject* BFS(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
         // TODO: Implementar a parte do png, no momento so ta false
-        printf("%s",((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, false).c_str());
-        return Py_BuildValue("");
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, false).c_str());
 }
 
 static PyObject* remove(PyObject* self, PyObject* args){
@@ -402,10 +399,10 @@ static PyMethodDef lib_methods[] = {
         {"addVertice", addVextex, METH_VARARGS, "Adiciona os vertices"},
         {"addPeso", addPeso, METH_VARARGS, "Adiciona os pesos na matriz"},
         {"generate", Generate, METH_VARARGS, "Finaliza a adição dos vertices"},
-        {"print", print, METH_VARARGS, "Printa a matriz e a lista de vertices"},
+        {"print", print, METH_VARARGS, "Retorna uma String da matriz do grafo"},
         {"remove", remove, METH_VARARGS, "Remove determinado vertice"},
-        {"DFS", DFS, METH_VARARGS, "DFS"},
-        {"BFS", BFS, METH_VARARGS, "BFS"},
+        {"DFS", DFS, METH_VARARGS, "String da DFS"},
+        {"BFS", BFS, METH_VARARGS, "String da BFS"},
         {NULL, NULL, 0, NULL}
 };
 

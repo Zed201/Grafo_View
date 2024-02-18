@@ -34,10 +34,8 @@ class GrafoMatriz{
         std::string print(bool png = false);
         std::string TranverseDFS(std::string inicio, bool png = false);
         std::string TranverseBFS(std::string inicio, bool png = false);
-
+        // ajudar  no lib de python
         void addVertex(std::string n1);
         void Generate();
-
-
 };
 
