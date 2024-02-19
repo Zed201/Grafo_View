@@ -1,9 +1,12 @@
-# TODO: Fazer a importacao de forma melhor
 import graph
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import random as rd
+import imageio.v2 as imageio
+import os
+import sys
+import re
 
 class Grafo:
     cores_nodes = ['red', 'blue', 'black', '#0D1321', '#FE5F55', '#8A1C7C', 'black']
@@ -37,11 +40,15 @@ class Grafo:
 
     # retorna uma string com o algoritmo de BFS
     def BFS(self, nodo_inicio:str):
-        return graph.BFS(self.__grafo__, nodo_inicio)[:-1]
-
+        a =  graph.BFS(self.__grafo__, nodo_inicio)[:-1]
+        # la no cpp ele cria esses .ttx com os passo, ai nesse caso so retira eles
+        os.system("rm -rf ./Matriz_*.txt")
+        return a
     # retorna uma string com o algoritmo de DFS
     def DFS(self, nodo_inicio:str):
-        return graph.DFS(self.__grafo__, nodo_inicio)[:-1]
+        a =  graph.BFS(self.__grafo__, nodo_inicio)[:-1]
+        os.system("rm -rf ./Matriz_*.txt")
+        return a
     
     def sep(self, print_str:str):
         nomes_grafo = dict()
@@ -56,13 +63,7 @@ class Grafo:
 
         return (Matriz, nomes_grafo)
 
-
-    def DrwPrint(self, file_name:str, style_dis:int=None, ind_cor:int=None):
-        if ind_cor == None:
-            ind_cor = rd.randint(0, len(self.cores_text) - 1)
-        if style_dis == None:
-            style_dis = rd.randint(0, 3)
-        Matriz, nomes_grafo = self.sep(self.print()) 
+    def __drw__(self, Matriz, nomes_grafo, style_dis:int=None, ind_cor:int=None):
         # o Grafo é escolhido na linha de baixo, podemos usar:
         # nx.Graph para nao direcionado ponderados
         # nx.DiGraph para ponderados e direcionados
@@ -91,11 +92,59 @@ class Grafo:
         for edge, w in pesos.items():
             nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
         # salvamento da imagem
+
+    def DrwPrint(self, file_name:str, style_dis:int=None, ind_cor:int=None):
+        if ind_cor == None:
+            ind_cor = rd.randint(0, len(self.cores_text) - 1)
+        if style_dis == None:
+            style_dis = rd.randint(0, 3)
+
+        Matriz, nomes_grafo = self.sep(self.print()) 
+        self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
         plt.savefig("./{0}.png".format(file_name), format='png')
+        plt.clf()
 
+    def __gif__(self, file_name:str):
+        padrao = re.compile(r'^Matriz_.*\.png$')
+        caminhos = list(filter(lambda x: padrao.match(x), os.listdir(os.path.dirname(__file__))))
+        file_name += ".gif"
+        with imageio.get_writer(file_name, fps=0.5) as file:
+            for g in sorted(caminhos):
+                file.append_data(imageio.imread(g))
+                os.remove(str(g))
+        
+    def __imgs__(self, style_dis:int=None, ind_cor:int=None):
+        if ind_cor == None:
+            ind_cor = rd.randint(0, len(self.cores_text) - 1)
+        if style_dis == None:
+            style_dis = rd.randint(0, 3)
 
-b = Grafo(["a2", "a1", "a4", "a5", "a8"])
-b.addVertex("a2", [("a1", 1), ("a4", 4)])
-b.addVertex("a1", [("a4", 4), ("a5", 150)])
-b.addVertex("a8", [("a1", -1), ("a5", 7), ("a5", -4)])
-b.DrwPrint("no", 2,3)
+        padrao = re.compile(r'^Matriz_.*\.txt$')
+        caminhos = list(filter(lambda x:padrao.match(x), os.listdir(os.path.dirname(__file__))))
+        for index, i in enumerate(sorted(caminhos)):
+            with open(str(i)) as file:
+                Matriz, nomes_grafo = self.sep(str(file.read()))
+                self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
+                plt.savefig("./Matriz_{0}.png".format(str(index)))
+                plt.clf()
+                os.remove(str(i))
+
+    def GifBFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
+        # logica
+        # os dados estao todos no Matriz_*.txt no proprio dir
+        graph.BFS(self.__grafo__, nodo_name)        
+        self.__imgs__(style_dis, ind_cor)
+        self.__gif__(file_name)
+
+    def GifDFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
+        # logica
+        graph.DFS(self.__grafo__, nodo_name)
+        self.__imgs__(style_dis, ind_cor)
+        self.__gif__(file_name)
+
+g = Grafo(["a", "b", "c", "d", "e", "f", "g"])
+g.addVertex("a", [("b", 1), ("c", 1), ("d", 1), ("f", 1), ("g", 1)  ])
+g.addVertex("c", [("b", 1)])
+g.addVertex("d", [("e", 1)])
+g.addVertex("f", [("e", 1)])
+g.GifDFS("a1", "ptr", 2, 3)

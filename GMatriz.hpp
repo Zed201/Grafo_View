@@ -31,7 +31,7 @@ class GrafoMatriz{
 
         void Add(std::string nodo1, int peso, std::string nodo2);
         void remove(std::string nodo);
-        std::string print(bool png = false);
+        std::string print);
         std::string TranverseDFS(std::string inicio, bool png = false);
         std::string TranverseBFS(std::string inicio, bool png = false);
         // ajudar  no lib de python

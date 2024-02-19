@@ -1,4 +1,6 @@
 #include "./GMatriz.hpp"
+// TODO: Trocar de .cpp a implementacao da lib de python e a da classe em si
+//  TODO: para ter ainda a classe certinha em c++
 using namespace std;
 #include <Python.h>
 
@@ -134,16 +136,9 @@ void GrafoMatriz::remove(std::string nodo){
                 ++ite;
         }
 }
-std::string GrafoMatriz::print(bool png){
-        this->png = false;
-        // desativao no momento ate fazer a integracao
+// TODO: Retirar o argumento de png, pois ja ta implementado em python
+std::string GrafoMatriz::print(){
         return this->print(this->graph);
-        /*std::fstream file("./Matriz.txt", std::ios::out);
-        file << tmp;
-        file.close();
-        //std::string comando = "python3 index.py Matriz Grafo_print";
-        std::cout << comando << std::endl;
-        system(comando.c_str());*/
 }
 
 std::string GrafoMatriz::print(int **printable){
@@ -168,6 +163,7 @@ std::string GrafoMatriz::print(int **printable){
 }
 
 void GrafoMatriz::setMark(){
+        this->tmpi = 0;
         if (this->mark != nullptr)
         {
                 free(this->mark);
@@ -196,16 +192,12 @@ void GrafoMatriz::setMark(){
 }
 
 void GrafoMatriz::save(){
-        // ! Desativado por hora, ate implementar todo o resultado
-        /* 
-        std::string mtx = this->print(this->ret);
-        std::fstream file("./Matriz.txt", std::ios::out);
-        file << mtx;
+        // refeito para funcionar junto com python
+        
+        std::fstream file("./Matriz_" + to_string(this->tmpi++) + ".txt", std::ios::out);
+        file << this->print(this->ret);
         file.close();
-        std::string comando = "python3 index.py Matriz Grafo_" + std::to_string(this->tmpi++);
-        std::cout << comando <<std:: endl;
-        system(comando.c_str());
-        */
+        
 }
 
 int GrafoMatriz::first(int v){
@@ -260,8 +252,6 @@ std::string GrafoMatriz::TranverseDFS(std::string inicio, bool png){
                         this->DFS(i);
                 }
         }
-        this->png = false;
-        this->tmpi = 0;
         return this->print(this->ret);
 }
 
@@ -305,8 +295,6 @@ std::string GrafoMatriz::TranverseBFS(std::string inicio, bool png){
                         this->BFS(i);
                 }
         }
-        this->png = false;
-        this->tmpi = 0;
         return this->print(this->ret);
 }
 
@@ -363,7 +351,7 @@ static PyObject* print(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
 
         // TODO: Implementar a parte do png, no momento so ta false
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->print(false).c_str());
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->print().c_str());
         
 }
 
@@ -373,7 +361,7 @@ static PyObject* DFS(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
         // TODO: Implementar a parte do png, no momento so ta false
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, false).c_str());
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, true).c_str());
 }
 
 static PyObject* BFS(PyObject* self, PyObject* args){
@@ -382,7 +370,7 @@ static PyObject* BFS(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
         // TODO: Implementar a parte do png, no momento so ta false
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, false).c_str());
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, true).c_str());
 }
 
 static PyObject* remove(PyObject* self, PyObject* args){
