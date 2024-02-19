@@ -252,7 +252,7 @@ std::string GrafoMatriz::TranverseDFS(std::string inicio, bool png){
                         this->DFS(i);
                 }
         }
-        return this->print(this->ret);
+       return this->print(this->ret);
 }
 
 void GrafoMatriz::BFS(int start){
@@ -350,7 +350,7 @@ static PyObject* print(PyObject* self, PyObject* args){
         PyObject* ptr;
         if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
 
-        // TODO: Implementar a parte do png, no momento so ta false
+        
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->print().c_str());
         
 }
@@ -359,8 +359,6 @@ static PyObject* DFS(PyObject* self, PyObject* args){
         PyObject* ptr;
         const char *str;
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
-
-        // TODO: Implementar a parte do png, no momento so ta false
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, true).c_str());
 }
 
@@ -369,7 +367,6 @@ static PyObject* BFS(PyObject* self, PyObject* args){
         const char *str;
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
-        // TODO: Implementar a parte do png, no momento so ta false
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, true).c_str());
 }
 

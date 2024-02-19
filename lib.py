@@ -5,7 +5,6 @@ import numpy as np
 import random as rd
 import imageio.v2 as imageio
 import os
-import sys
 import re
 
 class Grafo:
@@ -46,7 +45,7 @@ class Grafo:
         return a
     # retorna uma string com o algoritmo de DFS
     def DFS(self, nodo_inicio:str):
-        a =  graph.BFS(self.__grafo__, nodo_inicio)[:-1]
+        a =  graph.DFS(self.__grafo__, nodo_inicio)[:-1]
         os.system("rm -rf ./Matriz_*.txt")
         return a
     
@@ -142,9 +141,4 @@ class Grafo:
         self.__imgs__(style_dis, ind_cor)
         self.__gif__(file_name)
 
-g = Grafo(["a", "b", "c", "d", "e", "f", "g"])
-g.addVertex("a", [("b", 1), ("c", 1), ("d", 1), ("f", 1), ("g", 1)  ])
-g.addVertex("c", [("b", 1)])
-g.addVertex("d", [("e", 1)])
-g.addVertex("f", [("e", 1)])
-g.GifDFS("a1", "ptr", 2, 3)
+
