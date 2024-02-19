@@ -20,9 +20,9 @@ class Grafo:
         # para cores do draw
         rd.seed()
 
+    # print do grafo
     def print(self):
         # o -1 simplesmente tira o \n do final
-        # para ficar melhor no print do python
         return graph.print(self.__grafo__)[:-1]
 
     # Primeiro passa o nodo de inicio depois
@@ -40,16 +40,17 @@ class Grafo:
     # retorna uma string com o algoritmo de BFS
     def BFS(self, nodo_inicio:str):
         a =  graph.BFS(self.__grafo__, nodo_inicio)[:-1]
-        # la no cpp ele cria esses .ttx com os passo, ai nesse caso so retira eles
+        # la no cpp ele cria esses .txt com os passo, ai nesse caso so retira eles
         os.system("rm -rf ./Matriz_*.txt")
         return a
+
     # retorna uma string com o algoritmo de DFS
     def DFS(self, nodo_inicio:str):
         a =  graph.DFS(self.__grafo__, nodo_inicio)[:-1]
         os.system("rm -rf ./Matriz_*.txt")
         return a
     
-    def sep(self, print_str:str):
+    def __sep__(self, print_str:str):
         nomes_grafo = dict()
         printret = print_str.split("\n")
         vertices_td = int(printret[0])
@@ -92,13 +93,14 @@ class Grafo:
             nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
         # salvamento da imagem
 
+    # Criar um .png do grafo com base nos argumentos, se nao passar o style ou a cor ele randomiza
     def DrwPrint(self, file_name:str, style_dis:int=None, ind_cor:int=None):
         if ind_cor == None:
             ind_cor = rd.randint(0, len(self.cores_text) - 1)
         if style_dis == None:
             style_dis = rd.randint(0, 3)
 
-        Matriz, nomes_grafo = self.sep(self.print()) 
+        Matriz, nomes_grafo = self.__sep__(self.print()) 
         self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
         plt.savefig("./{0}.png".format(file_name), format='png')
         plt.clf()
@@ -122,12 +124,13 @@ class Grafo:
         caminhos = list(filter(lambda x:padrao.match(x), os.listdir(os.path.dirname(__file__))))
         for index, i in enumerate(sorted(caminhos)):
             with open(str(i)) as file:
-                Matriz, nomes_grafo = self.sep(str(file.read()))
+                Matriz, nomes_grafo = self.__sep__(str(file.read()))
                 self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
                 plt.savefig("./Matriz_{0}.png".format(str(index)))
                 plt.clf()
                 os.remove(str(i))
 
+    # funcoes d para gerar gifs do respectivo algoritmo
     def GifBFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
         # logica
         # os dados estao todos no Matriz_*.txt no proprio dir

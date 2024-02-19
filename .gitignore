@@ -2,16 +2,13 @@
 .ccls-cache/
 
 # dados
-./imagens/*.png
-Grafo*.txt
+*.txt
 
 # imagens e gif especificamente
 *.png
 *.jpeg
 *.gif
 
-# cmake/make files
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
+*.so
+*.out
+__pycache__/
