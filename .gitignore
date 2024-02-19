@@ -2,10 +2,13 @@
 .ccls-cache/
 
 # dados
-./imagens/*.png
 *.txt
 
 # imagens e gif especificamente
 *.png
 *.jpeg
 *.gif
+
+*.so
+*.out
+__pycache__/

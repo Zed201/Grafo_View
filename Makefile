@@ -1,13 +1,9 @@
-all:
-	@g++ index.cpp Grafo.cpp
-	@mkdir -p images
-	@rm -rf ./images/*.png
-	@./a.out
-	
-gif:
-	@python3 gif.py
-	@echo "feito"
+# serve para achar o python.h
+py_h=$(shell pkg-config --cflags python3)
+CFLAGS += $(py_h)
 
-re:
-	@rm -rf ./images/*.png *.txt *.gif index ./*.out
-	
+lib_py:
+	g++ libpyMatriz.cpp Grafo.cpp -shared -fPIC $(CFLAGS) -o graph.so
+
+c:
+	g++ index.cpp Grafo.cpp

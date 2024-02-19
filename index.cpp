@@ -1,21 +1,13 @@
 #include <iostream>
-#include "./GMatriz.hpp"
-
+#include "./Grafo.hpp"
 using namespace std;
 
-int main(int argv, char** argc){
-        GrafoMatriz grafu({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"});
-        grafu.Add("0", {{"9", 1 } });
-        grafu.Add("1", {{"0", 1}, {"6", 1} });
-        grafu.Add("2", {{"1", 1}, {"3", 1}, {"4", 1} });
-        grafu.Add("3", {{"1", 1} });
-        grafu.Add("4", {{"3", 1} });
-        grafu.Add("5", {{"4", 1} });
-        grafu.Add("6", {{"5", 1}, {"2", 1}, {"7", 1} });
-        grafu.Add("7", {{"8", 1}, {"9", 1} });
-        grafu.Add("8", {{"0", 1}, {"6", 1} });
-        grafu.Add("9", {{"0", 1} });
-        
-        cout << grafu.TranverseDFS("0", true);
+int main(){
+        GrafoMatriz gr({"a", "b", "c", "d", "e"});
+        gr.Add("a", {{"b", 10}, {"c", 3}, {"d", 20} });
+        gr.Add("b", {{"d", 5} });
+        gr.Add("c", {{"b", 2}, {"e", 15} });
+        gr.Add("d", {{"e", 11} });
+        cout << gr.print() << endl;
         return 0;
 }
