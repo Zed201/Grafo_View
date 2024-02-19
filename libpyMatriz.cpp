@@ -47,6 +47,7 @@ static PyObject* Generate(PyObject* self, PyObject* args){
         return Py_BuildValue("");
 }
 
+// funcao para o print, retornando apenas uma string
 static PyObject* print(PyObject* self, PyObject* args){
         PyObject* ptr;
         if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
@@ -56,6 +57,7 @@ static PyObject* print(PyObject* self, PyObject* args){
         
 }
 
+// as funções do BFS e DFS elas geram os .txt para ser usado na geração de .gif's
 static PyObject* DFS(PyObject* self, PyObject* args){
         PyObject* ptr;
         const char *str;
@@ -71,6 +73,7 @@ static PyObject* BFS(PyObject* self, PyObject* args){
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, true).c_str());
 }
 
+// remover um vertice
 static PyObject* remove(PyObject* self, PyObject* args){
         PyObject* ptr;
         const char *str;
@@ -79,8 +82,9 @@ static PyObject* remove(PyObject* self, PyObject* args){
         ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->remove(str);
         return Py_BuildValue("");
 }
-static PyMethodDef lib_methods[] = {
 
+// listagem de todos os métodos
+static PyMethodDef lib_methods[] = {
         {"create", createC, METH_VARARGS, "Funcao de criaçao"},
         {"addVertice", addVextex, METH_VARARGS, "Adiciona os vertices"},
         {"addPeso", addPeso, METH_VARARGS, "Adiciona os pesos na matriz"},
@@ -92,6 +96,7 @@ static PyMethodDef lib_methods[] = {
         {NULL, NULL, 0, NULL}
 };
 
+// criação da struct representando o modulo
 static struct PyModuleDef lib_module = {
         PyModuleDef_HEAD_INIT,
         "graph",
@@ -100,6 +105,7 @@ static struct PyModuleDef lib_module = {
         lib_methods
 };
 
+// inicialização do módulo de fato
 PyMODINIT_FUNC PyInit_graph(void){
         return PyModule_Create(&lib_module);
 }
