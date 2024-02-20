@@ -1,9 +1,8 @@
-# serve para achar o python.h
-py_h=$(shell pkg-config --cflags python3)
-CFLAGS += $(py_h)
+# serve para achar o python.h, antes tava usando pkg, mas assim fica maias de boa de achar
+py_h=$(shell  find /usr/include/p* -name python3*)
 
-lib_py:
-	g++ libpyMatriz.cpp Grafo.cpp -shared -fPIC $(CFLAGS) -o graph.so
+all:
+	g++ libpyMatriz.cpp Grafo.cpp -shared -fPIC -I$(py_h) -o graph.so
 
 c:
 	g++ index.cpp Grafo.cpp

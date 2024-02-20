@@ -1,15 +1,17 @@
 import graph
-import networkx as nx
+import networkx as nx # desenhar e plotar o grafico
 import matplotlib.pyplot as plt
-import numpy as np
-import random as rd
-import imageio.v2 as imageio
-import os
-import re
+import numpy as np # auxilio de matriz
+import random as rd # para randomizar os estilos
+import imageio.v2 as imageio # para criar o gif
+import os # para remover .txt
+import re 
 
 class Grafo:
+    # estilos que serão randomizados
     cores_nodes = ['red', 'blue', 'black', '#0D1321', '#FE5F55', '#8A1C7C', 'black']
     cores_text = ['black', 'whitesmoke', 'whitesmoke', '#F7F7FF', 'black', 'whitesmoke', 'white']
+
     # passa uma lista dos nomes dos nodos
     def __init__(self, nodos_name:list):
         self.__grafo__ = graph.create()
@@ -17,10 +19,10 @@ class Grafo:
             graph.addVertice(self.__grafo__, str(i))
 
         graph.generate(self.__grafo__)
-        # para cores do draw
+        
         rd.seed()
 
-    # print do grafo
+    # retorna uma str com a print do grafo
     def print(self):
         # o -1 simplesmente tira o \n do final
         return graph.print(self.__grafo__)[:-1]
@@ -143,5 +145,3 @@ class Grafo:
         graph.DFS(self.__grafo__, nodo_name)
         self.__imgs__(style_dis, ind_cor)
         self.__gif__(file_name)
-
-
