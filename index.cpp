@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./Grafo.hpp"
+#include "./src/Grafo.h"
 
 
 int main(){

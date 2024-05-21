@@ -9,6 +9,8 @@ compile:
 
 clean:
 	$(PY) ./src/setup.py clean --all
-	rm -f ./src/*.c *.so
+	rm -f ./src/*.c *.so *.png *.gif *.out *.o 
 	
+cpp:
+	g++ index.cpp src/Grafo.cpp
 		
