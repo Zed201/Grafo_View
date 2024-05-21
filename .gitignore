@@ -1,8 +1,6 @@
 # gerada com o vim
 .ccls-cache/
 
-# dados
-*.txt
 
 # imagens e gif especificamente
 *.png
