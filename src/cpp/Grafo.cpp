@@ -1,4 +1,4 @@
-#include "./Grafo.hpp"
+#include "./Grafo.h"
 
 using namespace std;
 // ! construtor usado pelo python

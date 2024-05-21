@@ -1,5 +1,5 @@
 // parte da compatibilidade com python
-#include "./Grafo.hpp"
+#include "./Grafo.h"
 #include <Python.h>
 
 // destructor da instancia da classe
