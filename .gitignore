@@ -12,3 +12,6 @@
 *.so
 *.out
 __pycache__/
+.vscode/
+.venv/
+*.c

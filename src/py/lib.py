@@ -80,12 +80,14 @@ class Grafo:
         # adiciona tamanaho aos nodos a depender dos labels deles
         nodos_size = [len(label) * 400 for label in nomes_grafo.values()]
         # tipos de layouts que dizem respetto a distribuição dos nodos
-        match (style_dis):
-            case 0: posi = nx.circular_layout(Grafo)     # modo circular
-            case 1: posi = nx.spring_layout(Grafo)             # modo spring, de mola
-            case 2: posi = nx.planar_layout(Grafo)     # forma planar, sem os edges se cuzarem
-            case 3: posi = nx.shell_layout(Grafo)    # n sei oque é shell
-            case _: posi = nx.circular_layout(Grafo)
+        # refazer pois o cython esta dando erro
+        posi = nx.circular_layout(Grafo)
+        # match style_dis:
+        #     case 0: posi = nx.circular_layout(Grafo)     # modo circular
+        #     case 1: posi = nx.spring_layout(Grafo)             # modo spring, de mola
+        #     case 2: posi = nx.planar_layout(Grafo)     # forma planar, sem os edges se cuzarem
+        #     case 3: posi = nx.shell_layout(Grafo)    # n sei oque é shell
+        #     case _: posi = nx.circular_layout(Grafo)
         # draw ´principal no plot
         nx.draw(Grafo, pos=posi, node_size=nodos_size, node_color=self.cores_nodes[ind_cor])
         # draw dos nomes do nodos
