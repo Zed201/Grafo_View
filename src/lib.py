@@ -147,3 +147,9 @@ class Grafo:
         graph.DFS(self.__grafo__, nodo_name)
         self.__imgs__(style_dis, ind_cor)
         self.__gif__(file_name)
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()

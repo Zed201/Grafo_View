@@ -1,5 +1,4 @@
-import src.graph as graph
-import src.lib as lib
+import lib
 
 a = lib.Grafo(["a", "b", "c", "d", "e"])
 a.addVertex("a", [("b", 10), ("c", 3), ("d", 20) ])

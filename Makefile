@@ -1,12 +1,14 @@
 # serve para achar o python.h, antes tava usando pkg, mas assim fica maias de boa de achar
-py_h=$(shell  find /usr/include/p* -name python3*)
-cpp_path=./src/
-py_path=./src/
+#py_h=$(shell  find /usr/include/p* -name python3*) nao mais necessario
+PY=$(shell which python3 || which python)
 
-all:
-	g++ $(cpp_path)libpyMatriz.cpp $(cpp_path)Grafo.cpp -shared -fPIC -I$(py_h) -o ./src/graph.so
-	cython $(py_path)lib.py --3str --module-name lib
-	gcc $(py_path)lib.c -fPIC -shared -I$(py_h) -o ./src/lib.so
+compile:
+		$(PY) ./src/setup.py build_ext
+		mv ./build/lib.linux-x86_64-3.10/lib.cpython-310-x86_64-linux-gnu.so ./lib.so
+		mv ./build/lib.linux-x86_64-3.10/graph.cpython-310-x86_64-linux-gnu.so ./graph.so
 
-c:
-	g++ index.cpp $(cpp_path)Grafo.cpp
+clean:
+	$(PY) ./src/setup.py clean --all
+	rm -f ./src/*.c *.so
+	
+		

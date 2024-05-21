@@ -12,5 +12,5 @@
 __pycache__/
 .vscode/
 .venv/
-./src/py/*.c
-./src/py/*.cpp
+/src/*.c
+build/
