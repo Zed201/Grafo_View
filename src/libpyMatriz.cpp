@@ -1,16 +1,14 @@
 // parte da compatibilidade com python
 #include "./Grafo.h"
-#include <Python.h>
+#include <./python3.10/Python.h>
 
 // destructor da instancia da classe
 static void des(PyObject *capsule){
         GrafoMatriz* ptr = (GrafoMatriz *)PyCapsule_GetPointer(capsule, NULL);
         if(ptr){        
-                //cout << "destruido" << endl;
                 delete ptr;
         }
 }
-
 // criação de uma instancia da classe de grafo
 // servir apenas para ponteiro, os vertices do argumentos de criaão passar para outra fuc
 static PyObject* createC(PyObject* self, PyObject* args){
@@ -62,7 +60,7 @@ static PyObject* DFS(PyObject* self, PyObject* args){
         PyObject* ptr;
         const char *str;
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str, true).c_str());
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str).c_str());
 }
 
 static PyObject* BFS(PyObject* self, PyObject* args){
@@ -70,7 +68,7 @@ static PyObject* BFS(PyObject* self, PyObject* args){
         const char *str;
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
 
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str, true).c_str());
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str).c_str());
 }
 
 // remover um vertice

@@ -1,12 +1,13 @@
 #include "./Grafo.h"
+#include <string>
 
 using namespace std;
 // ! construtor usado pelo python
-GrafoMatriz::GrafoMatriz() : qtdNodo(0), tmpi(0), png(false), graph(nullptr), ret(nullptr), mark(nullptr){}
+GrafoMatriz::GrafoMatriz() : qtdNodo(0), tmpi(0), graph(nullptr), ret(nullptr), mark(nullptr){}
 
 // ! Construtor usado pelo cpp
 // Basicamente passa um vetor com os nomes dos vértices
-GrafoMatriz::GrafoMatriz(std::initializer_list<std::string> nodos) : qtdNodo(0), tmpi(0), png(false), graph(nullptr), ret(nullptr), mark(nullptr){
+GrafoMatriz::GrafoMatriz(std::initializer_list<std::string> nodos) : qtdNodo(0), tmpi(0), graph(nullptr), ret(nullptr), mark(nullptr){
         for(std::string i : nodos){
                 this->nodos.push_back(i);
                 this->qtdNodo++;
@@ -24,9 +25,9 @@ GrafoMatriz::GrafoMatriz(std::initializer_list<std::string> nodos) : qtdNodo(0),
 void GrafoMatriz::addVertex(std::string n1){
         this->qtdNodo++;
         this->nodos.push_back(n1);
-        //cout << n1 << " criado" << endl;
 }
 
+// Usado pelo c++ 
 // Passa primeiro o nome do vertice de origem das arestas e depois um vetor, de tuplas, indicando o vertice de destino e o peso 
 void GrafoMatriz::Add(std::string nodo, std::initializer_list<std::pair<std::string, std::optional<int>>> pares){
         int i_nodo = this->Str_Int(nodo);
@@ -104,27 +105,29 @@ std::string GrafoMatriz::Int_Str(int nodo_index){
         }
         return (*k);
 }
-
-// serve para ajudar o funcionamento do algoritmo
+// TODO: Refazer mais eficiente, com libs de c++
+// serve para verificar se determinada string ta no vector
 bool GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){
-        std::vector<std::string>::iterator i = vec.begin();
-        while (i != vec.end())
-        {
-                if (nodo == (*i))
-                {
-                        return true;
-                }
-                ++i;
-        }
-        return false;
+        // std::vector<std::string>::iterator i = vec.begin();
+        // while (i != vec.end())
+        // {
+        //         if (nodo == (*i))
+        //         {
+        //                 return true;
+        //         }
+        //         ++i;
+        // }
+        // return false;
+        return std::any_of(vec.begin(), vec.end(), [](std::string n) {return n == nodo;})
 }
 
+// Funcao de add usado pelo python
 // função de add modificara para a logica da lib de python
 void GrafoMatriz::Add(std::string nodo1, int peso, std::string nodo2){
         int n1 = this->Str_Int(nodo1), n2 = this->Str_Int(nodo2);
         this->graph[n1][n2] = peso;
 }
-
+// Talvez remover
 // remove um vertice da matriz e da lista de vertices, mas modifica a ordem deles
 void GrafoMatriz::remove(std::string nodo){
         int i = this->Str_Int(nodo);
@@ -155,16 +158,18 @@ std::string GrafoMatriz::print(){
 }
 
 // print padrão
+// TODO
+// rever esse print
 std::string GrafoMatriz::print(int **printable){
         std::string resultado;
-        resultado += std::to_string(this->qtdNodo) + "\n";
-        std::vector<std::string>::iterator l = this->nodos.begin();
-        while (l != this->nodos.end())
-        {
-                resultado += (*l) + "\n";
-                ++l;
-        }
-
+        // resultado += std::to_string(this->qtdNodo) + "\n";
+        // std::vector<std::string>::iterator l = this->nodos.begin();
+        // while (l != this->nodos.end())
+        // {
+        //         resultado += (*l) + "\n";
+        //         ++l;
+        // }
+        // so vai retornar a matri
         for (int j = 0; j < this->qtdNodo; j++)
         {
                 for (int k = 0; k < this->qtdNodo; k++)
@@ -174,6 +179,10 @@ std::string GrafoMatriz::print(int **printable){
                 resultado += "\n";
         }
         return resultado;
+}
+
+std::string GrafoMatriz::Ordem(){
+        std::string resultado
 }
 
 // função auxiliar na execução dos algoritmos
@@ -209,12 +218,6 @@ void GrafoMatriz::setMark(){
 /* funcção funciona principalmente com a lib de python 
  * Basicamente ela salva cada passo do algoritmo num .txt para ser usado na lib do python
  * */
-void GrafoMatriz::save(){
-        std::fstream file("./Matriz_" + to_string(this->tmpi++) + ".txt", std::ios::out);
-        file << this->print(this->ret);
-        file.close();
-
-}
 
 // outras duas funções auxiliares na execução dos algoritmos
 int GrafoMatriz::first(int v){
@@ -238,7 +241,7 @@ int GrafoMatriz::next(int v, int w){
         }
         return this->qtdNodo;
 }
-
+// fazer os tranverse retornar uma matriz apenas
 // algoritmo do DFS por recursão
 void GrafoMatriz::DFS(int nodoIndex){
         // preVisit
@@ -321,4 +324,8 @@ std::string GrafoMatriz::TranverseBFS(std::string inicio, bool png){
         }
         return this->print(this->ret);
 }
+// basicamente para salvar o estado de ret
+// Dar algum jeito de salvar
+void GrafoMatriz::save(){
 
+}
