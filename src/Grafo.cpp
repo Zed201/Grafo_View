@@ -27,7 +27,7 @@ void GrafoMatriz::addVertex(std::string n1){
         this->nodos.push_back(n1);
 }
 
-// Usado pelo c++ 
+// Usado pelo c++
 // Passa primeiro o nome do vertice de origem das arestas e depois um vetor, de tuplas, indicando o vertice de destino e o peso 
 void GrafoMatriz::Add(std::string nodo, std::initializer_list<std::pair<std::string, std::optional<int>>> pares){
         int i_nodo = this->Str_Int(nodo);
@@ -107,18 +107,12 @@ std::string GrafoMatriz::Int_Str(int nodo_index){
 }
 // TODO: Refazer mais eficiente, com libs de c++
 // serve para verificar se determinada string ta no vector
-bool GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){
-        // std::vector<std::string>::iterator i = vec.begin();
-        // while (i != vec.end())
-        // {
-        //         if (nodo == (*i))
-        //         {
-        //                 return true;
-        //         }
-        //         ++i;
-        // }
-        // return false;
-        return std::any_of(vec.begin(), vec.end(), [](std::string n) {return n == nodo;})
+int GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){ 
+        return (int) std::any_of(vec.begin(), vec.end(), [nodo](std::string n) {return n == nodo;});
+}
+
+int GrafoMatriz::isIn(std::string nodo){
+        return this->isIn(nodo, this->nodos);
 }
 
 // Funcao de add usado pelo python
@@ -157,19 +151,8 @@ std::string GrafoMatriz::print(){
         return this->print(this->graph);
 }
 
-// print padrão
-// TODO
-// rever esse print
 std::string GrafoMatriz::print(int **printable){
         std::string resultado;
-        // resultado += std::to_string(this->qtdNodo) + "\n";
-        // std::vector<std::string>::iterator l = this->nodos.begin();
-        // while (l != this->nodos.end())
-        // {
-        //         resultado += (*l) + "\n";
-        //         ++l;
-        // }
-        // so vai retornar a matri
         for (int j = 0; j < this->qtdNodo; j++)
         {
                 for (int k = 0; k < this->qtdNodo; k++)
@@ -182,7 +165,13 @@ std::string GrafoMatriz::print(int **printable){
 }
 
 std::string GrafoMatriz::Ordem(){
-        std::string resultado
+        std::string resultado;
+        std::vector<std::string>::iterator l = this->nodos.begin();
+        while (l != this->nodos.end()){
+                resultado += (*l) + "\n";
+                ++l;
+        }
+        return resultado;
 }
 
 // função auxiliar na execução dos algoritmos
@@ -203,7 +192,7 @@ void GrafoMatriz::setMark(){
 
         this->mark = (bool *)malloc(sizeof(bool) * this->qtdNodo);
         this->ret = (int **)malloc(sizeof(int *) * this->qtdNodo);
-
+        this->save_state.clear();
         for (int i = 0; i < this->qtdNodo; i++)
         {
                 this->mark[i] = false;
@@ -252,10 +241,7 @@ void GrafoMatriz::DFS(int nodoIndex){
                 if (this->mark[w] == false)
                 {
                         this->ret[nodoIndex][w] = this->graph[nodoIndex][w];
-                        if (this->png)
-                        {
-                                this->save();
-                        }
+                        this->save();
                         this->DFS(w);
                 }
                 w = this->next(nodoIndex, w);
@@ -266,8 +252,7 @@ void GrafoMatriz::DFS(int nodoIndex){
 /*
  * Funcao principal para o algoritmo do BFS, ele so ira gerar os .txt dos passos se colocar true no argumento e png
  * */
-std::string GrafoMatriz::TranverseDFS(std::string inicio, bool png){
-        this->png = png;
+std::string GrafoMatriz::TranverseDFS(std::string inicio){
         this->setMark();
         this->DFS(this->Str_Int(inicio));
         for (int i = 0; i < this->qtdNodo; i++)
@@ -298,10 +283,7 @@ void GrafoMatriz::BFS(int start){
                         {
                                 this->mark[w] = true;
                                 this->ret[v][w] = this->graph[v][w];
-                                if (this->png)
-                                {
-                                        this->save();
-                                }
+                                this->save();
                                 q.push_back(w);
                         }
                         w = this->next(v, w);
@@ -311,8 +293,7 @@ void GrafoMatriz::BFS(int start){
 }
 
 // Funcao principal para o BFS, deixar o argumento de png true para ele printar todo os passos
-std::string GrafoMatriz::TranverseBFS(std::string inicio, bool png){
-        this->png = png;
+std::string GrafoMatriz::TranverseBFS(std::string inicio){
         this->setMark();
         this->BFS(this->Str_Int(inicio));
         for (int i = 0; i < this->qtdNodo; i++)
@@ -327,5 +308,13 @@ std::string GrafoMatriz::TranverseBFS(std::string inicio, bool png){
 // basicamente para salvar o estado de ret
 // Dar algum jeito de salvar
 void GrafoMatriz::save(){
+        this->save_state.push_back(this->print(this->ret));
+}
 
+std::vector<std::string> GrafoMatriz::getState(){
+        return this->save_state;
+}
+
+int GrafoMatriz::nodos_qtd(){
+        return this->qtdNodo; 
 }
