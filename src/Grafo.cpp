@@ -107,7 +107,7 @@ std::string GrafoMatriz::Int_Str(int nodo_index){
 }
 // TODO: Refazer mais eficiente, com libs de c++
 // serve para verificar se determinada string ta no vector
-bool GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){
+int GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){
         // std::vector<std::string>::iterator i = vec.begin();
         // while (i != vec.end())
         // {
@@ -118,7 +118,7 @@ bool GrafoMatriz::isIn(std::string nodo, std::vector<std::string> vec){
         //         ++i;
         // }
         // return false;
-        return std::any_of(vec.begin(), vec.end(), [](std::string n) {return n == nodo;})
+        return (int) std::any_of(vec.begin(), vec.end(), [nodo](std::string n) {return n == nodo;});
 }
 
 // Funcao de add usado pelo python
@@ -162,14 +162,6 @@ std::string GrafoMatriz::print(){
 // rever esse print
 std::string GrafoMatriz::print(int **printable){
         std::string resultado;
-        // resultado += std::to_string(this->qtdNodo) + "\n";
-        // std::vector<std::string>::iterator l = this->nodos.begin();
-        // while (l != this->nodos.end())
-        // {
-        //         resultado += (*l) + "\n";
-        //         ++l;
-        // }
-        // so vai retornar a matri
         for (int j = 0; j < this->qtdNodo; j++)
         {
                 for (int k = 0; k < this->qtdNodo; k++)
@@ -182,7 +174,13 @@ std::string GrafoMatriz::print(int **printable){
 }
 
 std::string GrafoMatriz::Ordem(){
-        std::string resultado
+        std::string resultado;
+        std::vector<std::string>::iterator l = this->nodos.begin();
+        while (l != this->nodos.end()){
+                resultado += (*l) + "\n";
+                ++l;
+        }
+        return resultado;
 }
 
 // função auxiliar na execução dos algoritmos
@@ -203,7 +201,7 @@ void GrafoMatriz::setMark(){
 
         this->mark = (bool *)malloc(sizeof(bool) * this->qtdNodo);
         this->ret = (int **)malloc(sizeof(int *) * this->qtdNodo);
-
+        this->save_state.clear();
         for (int i = 0; i < this->qtdNodo; i++)
         {
                 this->mark[i] = false;
@@ -327,5 +325,9 @@ std::string GrafoMatriz::TranverseBFS(std::string inicio, bool png){
 // basicamente para salvar o estado de ret
 // Dar algum jeito de salvar
 void GrafoMatriz::save(){
+         this->save_state.push_back(this->print(this->ret));
+}
 
+std::vector<std::string>> GrafoMatriz::getState(){
+        return this->save_state;
 }

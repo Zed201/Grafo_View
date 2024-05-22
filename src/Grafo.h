@@ -13,8 +13,8 @@ class GrafoMatriz{
         private:
                 // Qtd total de nodos
                 int qtdNodo;
-                // Os nomes de cada um
-                std::vector<std::string> nodos;
+                // Os nomes de cada um e os estados salvos do ret
+                std::vector<std::string> nodos, save_state;
                 // Os auxiliares para guardar a matriz
                 int **graph, **ret, tmpi;
                 bool *mark;
@@ -35,7 +35,6 @@ class GrafoMatriz{
                 int Str_Int(std::string nodo);
                 std::string Int_Str(int nodo_index);
                 // se o vertice ta ou nao no grafo
-                bool isIn(std::string nodo, std::vector<std::string> vec);
                 void Generate();
         public:
                 GrafoMatriz();
@@ -47,11 +46,13 @@ class GrafoMatriz{
                 // talvez remover
                 void remove(std::string nodo);
                 std::string print();
+                std::vector<std::string>> getState();
                 std::string Ordem();
                 // Verdadeiro tranverse
                 std::string TranverseDFS(std::string inicio);
                 std::string TranverseBFS(std::string inicio);
                 // ajudar  no lib de python
                 void addVertex(std::string n1);
+                int isIn(std::string nodo, std::vector<std::string> vec);
 };
 

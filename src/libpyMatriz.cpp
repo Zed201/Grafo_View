@@ -1,6 +1,11 @@
 // parte da compatibilidade com python
 #include "./Grafo.h"
 #include <./python3.10/Python.h>
+#include <python3.10/intrcheck.h>
+#include <python3.10/methodobject.h>
+#include <python3.10/object.h>
+#include <python3.10/pycapsule.h>
+// #include <python3.10/modsupport.h>
 
 // destructor da instancia da classe
 static void des(PyObject *capsule){
@@ -60,15 +65,16 @@ static PyObject* DFS(PyObject* self, PyObject* args){
         PyObject* ptr;
         const char *str;
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str).c_str());
+        // TODO: Nao ta retornando mais str mas sim usar o getState
+        //return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str).c_str());
 }
 
 static PyObject* BFS(PyObject* self, PyObject* args){
         PyObject* ptr;
         const char *str;
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
-
-        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str).c_str());
+        // TODO: implementar a ideia do getState
+        // return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str).c_str());
 }
 
 // remover um vertice
@@ -81,6 +87,20 @@ static PyObject* remove(PyObject* self, PyObject* args){
         return Py_BuildValue("");
 }
 
+static PyObject* isIn(PyObject* self, PyObject* args){
+        PyObject* ptr;
+        const char *str;
+        if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){ return NULL;}
+        std::string st = str;
+        return Py_BuildValue("i", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->isIn(st));
+}
+
+static PyObject* getOrdem(PyObject *self, PyObject* args){
+        PyObject* ptr;
+        if(!PyArg_ParseTuple(args, "O", &ptr){ return NULL;}
+        return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->Ordem().c_str());
+}
+
 // listagem de todos os métodos
 static PyMethodDef lib_methods[] = {
         {"create", createC, METH_VARARGS, "Funcao de criaçao"},
@@ -91,6 +111,8 @@ static PyMethodDef lib_methods[] = {
         {"remove", remove, METH_VARARGS, "Remove determinado vertice"},
         {"DFS", DFS, METH_VARARGS, "String da DFS"},
         {"BFS", BFS, METH_VARARGS, "String da BFS"},
+        {"isIN", isIn, METH_VARARGS, "Verificar se um vertice esta no grafo"},
+        {"Ordem", getOrdem, METH_VARARGS, "Retorna uma string com a ordem dos vertices"},
         {NULL, NULL, 0, NULL}
 };
 

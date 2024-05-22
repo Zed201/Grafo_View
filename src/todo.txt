@@ -1,2 +1,1 @@
-Testar o isIN
-Mudar o retorno do print para apenas a matriz
+Criar função para ir lendo os save_state(basicamente ver como passar vector de string para o python)
