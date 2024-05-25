@@ -44,6 +44,7 @@ class GrafoMatriz{
                 void remove(std::string nodo);
                 std::string print();
                 std::vector<std::string> getState();
+               
                 std::string Ordem();
                 // Verdadeiro tranverse
                 std::string TranverseDFS(std::string inicio);
@@ -54,5 +55,6 @@ class GrafoMatriz{
                 int isIn(std::string nodo);
                 void Generate();
                 int nodos_qtd();
+
 };
 

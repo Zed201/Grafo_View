@@ -1,13 +1,7 @@
 // parte da compatibilidade com python
 #include "./Grafo.h"
 #include <./python3.10/Python.h>
-#include <cstdio>
-#include <python3.10/listobject.h>
-#include <python3.10/methodobject.h>
-#include <python3.10/object.h>
-#include <python3.10/pycapsule.h>
-#include <string>
-#include <vector>
+
 
 // destructor da instancia da classe
 static void des(PyObject *capsule){
@@ -70,6 +64,7 @@ static PyObject* DFS(PyObject* self, PyObject* args){
 
         // TODO: Nao ta retornando mais str mas sim usar o getState
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseDFS(str).c_str());
+
 }
 
 static PyObject* BFS(PyObject* self, PyObject* args){
@@ -78,6 +73,7 @@ static PyObject* BFS(PyObject* self, PyObject* args){
         if(!PyArg_ParseTuple(args, "Os", &ptr, &str)){return NULL;}
         // TODO: implementar a ideia do getState
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->TranverseBFS(str).c_str());
+
 }
 
 static PyObject* get_state(PyObject* self, PyObject* args){
