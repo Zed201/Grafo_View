@@ -39,23 +39,20 @@ class Grafo:
                 # vertices no mesmo nodo
                 raise Exception("Não pode ter vertice para o próprio nodo")
 
-    # retorna uma string com o algoritmo de BFS
+    # retorna uma string com o algoritmo de BFS(Matriz final)
     def BFS(self, nodo_inicio:str):
-        a =  graph.BFS(self.__grafo__, nodo_inicio)[:-1]
+        return graph.BFS(self.__grafo__, nodo_inicio)[:-1]
         # la no cpp ele cria esses .txt com os passo, ai nesse caso so retira eles
-        os.system("rm -rf ./Matriz_*.txt")
-        return a
 
-    # retorna uma string com o algoritmo de DFS
+    # retorna uma string com o algoritmo de DFS(Matriz final)
     def DFS(self, nodo_inicio:str):
-        a =  graph.DFS(self.__grafo__, nodo_inicio)[:-1]
-        os.system("rm -rf ./Matriz_*.txt")
-        return a
+        return graph.DFS(self.__grafo__, nodo_inicio)[:-1]
     
     def __sep__(self, print_str:str):
+        # reformular para pegar a matriz no geral e seprar
         nomes_grafo = dict()
         printret = print_str.split("\n")
-        vertices_td = int(printret[0])
+        vertices_td = graph.NodosQtd(self.__grafo__) 
         Matriz = np.zeros((vertices_td, vertices_td))
         for i in range(vertices_td):
             nomes_grafo[i] = str(printret[i + 1]).strip()
@@ -103,7 +100,7 @@ class Grafo:
             ind_cor = rd.randint(0, len(self.cores_text) - 1)
         if style_dis == None:
             style_dis = rd.randint(0, 3)
-
+        # mudar a logica, o print so ta retornando a matriz
         Matriz, nomes_grafo = self.__sep__(self.print()) 
         self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
         plt.savefig("./{0}.png".format(file_name), format='png')
@@ -133,7 +130,7 @@ class Grafo:
                 plt.savefig("./Matriz_{0}.png".format(str(index)))
                 plt.clf()
                 os.remove(str(i))
-
+    # mudar a logica para pegar o state e com ele gerar o gif
     # funcoes d para gerar gifs do respectivo algoritmo
     def GifBFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
         # logica

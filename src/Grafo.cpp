@@ -308,7 +308,6 @@ std::string GrafoMatriz::TranverseBFS(std::string inicio){
 // basicamente para salvar o estado de ret
 // Dar algum jeito de salvar
 void GrafoMatriz::save(){
-<<<<<<< HEAD
         this->save_state.push_back(this->print(this->ret));
 }
 
@@ -318,11 +317,5 @@ std::vector<std::string> GrafoMatriz::getState(){
 
 int GrafoMatriz::nodos_qtd(){
         return this->qtdNodo; 
-=======
-         this->save_state.push_back(this->print(this->ret));
 }
 
-std::vector<std::string>> GrafoMatriz::getState(){
-        return this->save_state;
->>>>>>> refs/remotes/origin/master
-}

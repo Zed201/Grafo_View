@@ -1,6 +1,8 @@
 // parte da compatibilidade com python
 #include "./Grafo.h"
 #include <./python3.10/Python.h>
+#include <python3.10/methodobject.h>
+#include <python3.10/object.h>
 
 
 // destructor da instancia da classe
@@ -126,6 +128,14 @@ static PyObject* getOrdem(PyObject *self, PyObject* args){
         return Py_BuildValue("s", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->Ordem().c_str());
 }
 
+static PyObject* getQtd(PyObject *self, PyObject* args){
+        PyObject* ptr;
+        if(!PyArg_ParseTuple(args, "O", &ptr)){ 
+                return NULL;
+        }
+        return Py_BuildValue("i", ((GrafoMatriz *)PyCapsule_GetPointer(ptr, NULL))->nodos_qtd());
+}
+
 // listagem de todos os métodos
 static PyMethodDef lib_methods[] = {
         {"create", createC, METH_VARARGS, "Funcao de criaçao"},
@@ -139,6 +149,7 @@ static PyMethodDef lib_methods[] = {
         {"isIN", isIn, METH_VARARGS, "Verificar se um vertice esta no grafo"},
         {"Ordem", getOrdem, METH_VARARGS, "Retorna uma string com a ordem dos vertices"},
         {"getState", get_state, METH_VARARGS, "Retorna uma lista com os states"},
+        {"NodosQtd", getQtd, METH_VARARGS, "Retornar a quantidade de nós no grafico"},
         {NULL, NULL, 0, NULL}
 };
 

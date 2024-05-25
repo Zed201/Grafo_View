@@ -1,1 +1,0 @@
-Criar função para ir lendo os save_state(basicamente ver como passar vector de string para o python)
