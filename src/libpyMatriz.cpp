@@ -1,8 +1,6 @@
 // parte da compatibilidade com python
 #include "./Grafo.h"
-#include <./python3.10/Python.h>
-#include <python3.10/methodobject.h>
-#include <python3.10/object.h>
+#include <Python.h>
 
 
 // destructor da instancia da classe

@@ -168,7 +168,7 @@ std::string GrafoMatriz::Ordem(){
         std::string resultado;
         std::vector<std::string>::iterator l = this->nodos.begin();
         while (l != this->nodos.end()){
-                resultado += (*l) + "\n";
+                resultado += (*l) + " ";
                 ++l;
         }
         return resultado;

@@ -22,11 +22,6 @@ class Grafo:
         
         rd.seed()
 
-    # retorna uma str com a print do grafo
-    def print(self):
-        # o -1 simplesmente tira o \n do final
-        return graph.print(self.__grafo__)[:-1]
-
     # Primeiro passa o nodo de inicio depois
     # passa a lista por tupla, indicando primeiro
     # o nodo de destino depois o peso, [("nodo1", 123)]
@@ -39,37 +34,45 @@ class Grafo:
                 # vertices no mesmo nodo
                 raise Exception("Não pode ter vertice para o próprio nodo")
 
+    @property
+    def matriz(self):
+        return self.__sep__(graph.print(self.__grafo__))
+
+    @property
+    def qtdNodos(self):
+        return graph.NodosQtd(self.__grafo__)
+    @property
+    def ordem(self):
+        return graph.Ordem(self.__grafo__)
+
     # retorna uma string com o algoritmo de BFS(Matriz final)
     def BFS(self, nodo_inicio:str):
-        return graph.BFS(self.__grafo__, nodo_inicio)[:-1]
+        return graph.BFS(self.__grafo__, nodo_inicio)
         # la no cpp ele cria esses .txt com os passo, ai nesse caso so retira eles
 
     # retorna uma string com o algoritmo de DFS(Matriz final)
     def DFS(self, nodo_inicio:str):
-        return graph.DFS(self.__grafo__, nodo_inicio)[:-1]
+        return graph.DFS(self.__grafo__, nodo_inicio)
     
-    def __sep__(self, print_str:str):
-        # reformular para pegar a matriz no geral e seprar
-        nomes_grafo = dict()
-        printret = print_str.split("\n")
-        vertices_td = graph.NodosQtd(self.__grafo__) 
-        Matriz = np.zeros((vertices_td, vertices_td))
-        for i in range(vertices_td):
-            nomes_grafo[i] = str(printret[i + 1]).strip()
-            linha = str(printret[vertices_td + i + 1]).split()
-            for ind, el in enumerate(linha):
-                Matriz[i][ind] = int(el)
+    def __str__(self) -> str:
+        return graph.print(self.__grafo__)
 
-        return (Matriz, nomes_grafo)
-
-    def __drw__(self, Matriz, nomes_grafo, style_dis:int=None, ind_cor:int=None):
+    def __sep__(self, matrix:str):
+        tmp = matrix.split(" \n")[:-1]
+        m = np.zeros((self.qtdNodos, self.qtdNodos))
+        for idx, eli in enumerate(tmp):
+            for jdx, elj in enumerate(eli.split(" ")):
+                m[idx, jdx] = int(elj)
+        return m
+ 
+    def __drw__(self, Matriz, nomes_grafo, style_dis:int, ind_cor:int):
         # o Grafo é escolhido na linha de baixo, podemos usar:
         # nx.Graph para nao direcionado ponderados
         # nx.DiGraph para ponderados e direcionados
         # nx.MultiGraph para multigrafos nao direcionados (nao funciona direito)
         # nx.MultiDigraph, para multigrafos direcionados(nao funciona direito, pois as multiplas arestas parecem nao funcionar com matrizes)
         # cria o grafo em si, e passa o dict como os labels deles
-        Grafo = nx.relabel_nodes(nx.DiGraph(Matriz), nomes_grafo, 'name')
+        Grafo = nx.relabel_nodes(G=nx.DiGraph(Matriz), mapping=nomes_grafo) # antes tinha o 'name' para indicar os nomes
         plt.figure(1, figsize=(8,6))
         # pega os atributos name e pesos
         pesos = nx.get_edge_attributes(Grafo, "weight")
@@ -88,62 +91,51 @@ class Grafo:
         # draw ´principal no plot
         nx.draw(Grafo, pos=posi, node_size=nodos_size, node_color=self.cores_nodes[ind_cor])
         # draw dos nomes do nodos
-        nx.draw_networkx_labels(Grafo, pos=posi, font_size=10, font_color=self.cores_text[ind_cor])
-        # draw de cada peso de aresta 
-        for edge, w in pesos.items():
-            nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
-        # salvamento da imagem
+        # nx.draw_networkx_labels(Grafo, pos=posi, font_size=10, font_color=self.cores_text[ind_cor])
+        # nx.draw_networkx_labels(Grafo)
+        # # draw de cada peso de aresta 
+        # for edge, w in pesos.items():
+        #     nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
+        # # salvamento da imagem
 
     # Criar um .png do grafo com base nos argumentos, se nao passar o style ou a cor ele randomiza
-    def DrwPrint(self, file_name:str, style_dis:int=None, ind_cor:int=None):
-        if ind_cor == None:
-            ind_cor = rd.randint(0, len(self.cores_text) - 1)
-        if style_dis == None:
-            style_dis = rd.randint(0, 3)
+    def DrwPrint(self, file_name:str, style_dis:int, ind_cor:int):
+        # if ind_cor == None:
+            # ind_cor = rd.randint(0, len(self.cores_text) - 1)
+        # if style_dis == None:
+            # style_dis = rd.randint(0, 3)
         # mudar a logica, o print so ta retornando a matriz
-        Matriz, nomes_grafo = self.__sep__(self.print()) 
+        Matriz = self.matriz 
+        nomes_grafo = dict()
+        tmp_n = self.ordem.split(" ")[:-1]
+        for idx, el in enumerate(tmp_n):
+            nomes_grafo[idx] = el
         self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
-        plt.savefig("./{0}.png".format(file_name), format='png')
-        plt.clf()
+        # plt.imshow()
+        # plt.savefig("./{0}.png".format(file_name), format='png')
+        # plt.clf()
 
-    def __gif__(self, file_name:str):
-        padrao = re.compile(r'^Matriz_.*\.png$')
-        caminhos = list(filter(lambda x: padrao.match(x), os.listdir(os.path.dirname(__file__))))
-        file_name += ".gif"
-        with imageio.get_writer(file_name, fps=0.5) as file:
-            for g in sorted(caminhos):
-                file.append_data(imageio.imread(g))
-                os.remove(str(g))
-        
-    def __imgs__(self, style_dis:int=None, ind_cor:int=None):
-        if ind_cor == None:
-            ind_cor = rd.randint(0, len(self.cores_text) - 1)
-        if style_dis == None:
-            style_dis = rd.randint(0, 3)
+    # def __gif__(self, file_name:str):
+    #     padrao = re.compile(r'^Matriz_.*\.png$')
+    #     caminhos = list(filter(lambda x: padrao.match(x), os.listdir(os.path.dirname(__file__))))
+    #     file_name += ".gif"
+    #     with imageio.get_writer(file_name, fps=0.5) as file:
+    #         for g in sorted(caminhos):
+    #             file.append_data(imageio.imread(g))
+    #             os.remove(str(g))
+    #     
+    # def GifBFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
+    #     # logica
+    #     # os dados estao todos no Matriz_*.txt no proprio dir
+    #     graph.BFS(self.__grafo__, nodo_name)        
+    #     self.__imgs__(style_dis, ind_cor)
+    #     self.__gif__(file_name)
 
-        padrao = re.compile(r'^Matriz_.*\.txt$')
-        caminhos = list(filter(lambda x:padrao.match(x), os.listdir(os.path.dirname(__file__))))
-        for index, i in enumerate(sorted(caminhos)):
-            with open(str(i)) as file:
-                Matriz, nomes_grafo = self.__sep__(str(file.read()))
-                self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
-                plt.savefig("./Matriz_{0}.png".format(str(index)))
-                plt.clf()
-                os.remove(str(i))
-    # mudar a logica para pegar o state e com ele gerar o gif
-    # funcoes d para gerar gifs do respectivo algoritmo
-    def GifBFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
-        # logica
-        # os dados estao todos no Matriz_*.txt no proprio dir
-        graph.BFS(self.__grafo__, nodo_name)        
-        self.__imgs__(style_dis, ind_cor)
-        self.__gif__(file_name)
-
-    def GifDFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
-        # logica
-        graph.DFS(self.__grafo__, nodo_name)
-        self.__imgs__(style_dis, ind_cor)
-        self.__gif__(file_name)
+    # def GifDFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
+    #     # logica
+    #     graph.DFS(self.__grafo__, nodo_name)
+    #     self.__imgs__(style_dis, ind_cor)
+    #     self.__gif__(file_name)
 
 def main():
     pass
