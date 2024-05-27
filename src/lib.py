@@ -72,47 +72,50 @@ class Grafo:
         # nx.MultiGraph para multigrafos nao direcionados (nao funciona direito)
         # nx.MultiDigraph, para multigrafos direcionados(nao funciona direito, pois as multiplas arestas parecem nao funcionar com matrizes)
         # cria o grafo em si, e passa o dict como os labels deles
+
         Grafo = nx.relabel_nodes(G=nx.DiGraph(Matriz), mapping=nomes_grafo) # antes tinha o 'name' para indicar os nomes
         plt.figure(1, figsize=(8,6))
         # pega os atributos name e pesos
         pesos = nx.get_edge_attributes(Grafo, "weight")
-        nomes = nx.get_node_attributes(Grafo, "name")
         # adiciona tamanaho aos nodos a depender dos labels deles
         nodos_size = [len(label) * 400 for label in nomes_grafo.values()]
         # tipos de layouts que dizem respetto a distribuição dos nodos
         # refazer pois o cython esta dando erro
-        posi = nx.circular_layout(Grafo)
-        # match style_dis:
-        #     case 0: posi = nx.circular_layout(Grafo)     # modo circular
-        #     case 1: posi = nx.spring_layout(Grafo)             # modo spring, de mola
-        #     case 2: posi = nx.planar_layout(Grafo)     # forma planar, sem os edges se cuzarem
-        #     case 3: posi = nx.shell_layout(Grafo)    # n sei oque é shell
-        #     case _: posi = nx.circular_layout(Grafo)
+        posi = None
+        if style_dis == 0: 
+            posi = nx.circular_layout(Grafo)     # modo circular
+        elif style_dis == 1: 
+            posi = nx.spring_layout(Grafo)             # modo spring, de mola
+        elif style_dis == 2: 
+            posi = nx.planar_layout(Grafo)     # forma planar, sem os edges se cuzarem
+        elif style_dis == 3: 
+            posi = nx.shell_layout(Grafo)    # n sei oque é shell
+        else: 
+            posi = nx.circular_layout(Grafo)
+            
+        
         # draw ´principal no plot
         nx.draw(Grafo, pos=posi, node_size=nodos_size, node_color=self.cores_nodes[ind_cor])
         # draw dos nomes do nodos
-        # nx.draw_networkx_labels(Grafo, pos=posi, font_size=10, font_color=self.cores_text[ind_cor])
+        nx.draw_networkx_labels(Grafo, pos=posi, font_size=10, font_color=self.cores_text[ind_cor])
         # nx.draw_networkx_labels(Grafo)
         # # draw de cada peso de aresta 
-        # for edge, w in pesos.items():
-        #     nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
+        for edge, w in pesos.items():
+            nx.draw_networkx_edge_labels(Grafo, pos=posi, edge_labels={(edge[0], edge[1]) : w})
         # # salvamento da imagem
 
     # Criar um .png do grafo com base nos argumentos, se nao passar o style ou a cor ele randomiza
-    def DrwPrint(self, file_name:str, style_dis:int, ind_cor:int):
-        # if ind_cor == None:
-            # ind_cor = rd.randint(0, len(self.cores_text) - 1)
-        # if style_dis == None:
-            # style_dis = rd.randint(0, 3)
-        # mudar a logica, o print so ta retornando a matriz
+    def DrwPrint(self, style_dis=None, ind_cor=None, file_name=None):
         Matriz = self.matriz 
         nomes_grafo = dict()
         tmp_n = self.ordem.split(" ")[:-1]
         for idx, el in enumerate(tmp_n):
             nomes_grafo[idx] = el
         self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
-        # plt.imshow()
-        # plt.savefig("./{0}.png".format(file_name), format='png')
+        if file_name:
+            plt.savefig("./{0}.png".format(file_name), format='png')
+        else:
+            plt.draw()
         # plt.clf()
 
     # def __gif__(self, file_name:str):
