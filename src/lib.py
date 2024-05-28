@@ -19,7 +19,7 @@ class Grafo:
             graph.addVertice(self.__grafo__, str(i))
 
         graph.generate(self.__grafo__)
-        
+
         rd.seed()
 
     # Primeiro passa o nodo de inicio depois
@@ -48,12 +48,12 @@ class Grafo:
     # retorna uma string com o algoritmo de BFS(Matriz final)
     def BFS(self, nodo_inicio:str):
         return graph.BFS(self.__grafo__, nodo_inicio)
-        # la no cpp ele cria esses .txt com os passo, ai nesse caso so retira eles
+    # la no cpp ele cria esses .txt com os passo, ai nesse caso so retira eles
 
     # retorna uma string com o algoritmo de DFS(Matriz final)
     def DFS(self, nodo_inicio:str):
         return graph.DFS(self.__grafo__, nodo_inicio)
-    
+
     def __str__(self) -> str:
         return graph.print(self.__grafo__)
 
@@ -64,14 +64,18 @@ class Grafo:
             for jdx, elj in enumerate(eli.split(" ")):
                 m[idx, jdx] = int(elj)
         return m
- 
-    def __drw__(self, Matriz, nomes_grafo, style_dis:int, ind_cor:int):
+
+    def __drw__(self, Matriz, style_dis:int, ind_cor:int):
         # o Grafo é escolhido na linha de baixo, podemos usar:
         # nx.Graph para nao direcionado ponderados
         # nx.DiGraph para ponderados e direcionados
         # nx.MultiGraph para multigrafos nao direcionados (nao funciona direito)
         # nx.MultiDigraph, para multigrafos direcionados(nao funciona direito, pois as multiplas arestas parecem nao funcionar com matrizes)
         # cria o grafo em si, e passa o dict como os labels deles
+        nomes_grafo = dict()
+        tmp_n = self.ordem.split(" ")[:-1]
+        for idx, el in enumerate(tmp_n):
+            nomes_grafo[idx] = el
 
         Grafo = nx.relabel_nodes(G=nx.DiGraph(Matriz), mapping=nomes_grafo) # antes tinha o 'name' para indicar os nomes
         plt.figure(1, figsize=(8,6))
@@ -92,8 +96,8 @@ class Grafo:
             posi = nx.shell_layout(Grafo)    # n sei oque é shell
         else: 
             posi = nx.circular_layout(Grafo)
-            
-        
+
+
         # draw ´principal no plot
         nx.draw(Grafo, pos=posi, node_size=nodos_size, node_color=self.cores_nodes[ind_cor])
         # draw dos nomes do nodos
@@ -105,43 +109,45 @@ class Grafo:
         # # salvamento da imagem
 
     # Criar um .png do grafo com base nos argumentos, se nao passar o style ou a cor ele randomiza
-    def DrwPrint(self, style_dis=None, ind_cor=None, file_name=None):
+    def DrwPrint(self, style_dis:int, ind_cor:int, file_name=None):
         Matriz = self.matriz 
-        nomes_grafo = dict()
-        tmp_n = self.ordem.split(" ")[:-1]
-        for idx, el in enumerate(tmp_n):
-            nomes_grafo[idx] = el
-        self.__drw__(Matriz, nomes_grafo, style_dis, ind_cor)
+        self.__drw__(Matriz, style_dis, ind_cor)
         if file_name:
             plt.savefig("./{0}.png".format(file_name), format='png')
         else:
             plt.draw()
-        # plt.clf()
+        plt.clf()
 
-    def states(self):
-        graph.getState(self.__grafo__)
+    @property
+    def __states__(self):
+        states_ = graph.getState(self.__grafo__)
+        states = []
+        # algum erro aqui
+        for i in states_:
+            if i:
+                states.append(self.__sep__(i))
+        return states
+    # ta dando segfault ao entrar nessa func 
+    def __gif__(self, states, file_name, style_dis, ind_color):
+        # vai criar um .txt para auxiliar e no final vai juntar tudo
+        file_name += '.gif'
+        file_ = "M.png"
+        with imageio.get_writer(file_name, fps=0.5) as file:
+            for i in states:
+                self.__drw__(i, style_dis, ind_color)
+                plt.savefig(file_, format='png')
+                plt.clf()
+                file.append_data(imageio.imread(file_))
+                os.remove(file_)
 
-    # def __gif__(self, file_name:str):
-    #     padrao = re.compile(r'^Matriz_.*\.png$')
-    #     caminhos = list(filter(lambda x: padrao.match(x), os.listdir(os.path.dirname(__file__))))
-    #     file_name += ".gif"
-    #     with imageio.get_writer(file_name, fps=0.5) as file:
-    #         for g in sorted(caminhos):
-    #             file.append_data(imageio.imread(g))
-    #             os.remove(str(g))
-    #     
-    # def GifBFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
-    #     # logica
-    #     # os dados estao todos no Matriz_*.txt no proprio dir
-    #     graph.BFS(self.__grafo__, nodo_name)        
-    #     self.__imgs__(style_dis, ind_cor)
-    #     self.__gif__(file_name)
 
-    # def GifDFS(self, nodo_name:str, file_name:str, style_dis:int=None, ind_cor:int=None):
-    #     # logica
-    #     graph.DFS(self.__grafo__, nodo_name)
-    #     self.__imgs__(style_dis, ind_cor)
-    #     self.__gif__(file_name)
+    def GifBFS(self, nodo_name:str, file_name:str, ind_cor:int):
+        a = self.BFS(nodo_name)
+        self.__gif__(self.__states__, file_name, 0, ind_cor)
+
+    def GifDFS(self, nodo_name:str, file_name:str, ind_cor:int):
+        a = self.DFS(nodo_name)
+        self.__gif__(self.__states__, file_name, 0, ind_cor)
 
 def main():
     pass

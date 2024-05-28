@@ -1,5 +1,6 @@
 // parte da compatibilidade com python
 #include "./Grafo.h"
+#include <python3.12/Python.h>
 #include <Python.h>
 
 
@@ -80,14 +81,29 @@ static PyObject* get_state(PyObject* self, PyObject* args){
         PyObject* ptr;
         if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
         // criando a lista ele da bad_alloc, ate sem so printando ele tava dando bac_alloc
-        printf("Nada\n");
-        // GrafoMatriz* gra = (GrafoMatriz *) ptr;
-
-        // std::vector<std::string> vec = gra->getState();
-        // std::string temp = "";
-        // printf("%d\n", vec.size()) ;
-
-        return Py_BuildValue("");
+        GrafoMatriz* gra = (GrafoMatriz *) PyCapsule_GetPointer(ptr, NULL);
+        if(gra->save_state.size() == 0){
+                // Nao tem state
+                printf("Sem states\n");
+                return Py_BuildValue(""); // retorna None
+        }
+        PyObject* lista  = PyList_New(gra->save_state.size());
+        PyObject* tmp = NULL;
+        if (!lista) {
+                printf("Erro criando a lista\n");
+                return NULL;
+        }
+        int j = 0;
+        for (std::string i : gra->save_state) {
+                tmp = Py_BuildValue("s", i.c_str());
+                if(!tmp){
+                        Py_DecRef(lista);
+                        printf("Erro na alocação de elementos\n");
+                        return NULL;
+                }
+                PyList_SetItem(lista, j++, tmp);
+        }
+        return lista;
 }
 
 // remover um vertice

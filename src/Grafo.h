@@ -14,7 +14,7 @@ class GrafoMatriz{
                 // Qtd total de nodos
                 int qtdNodo;
                 // Os nomes de cada um e os estados salvos do ret
-                std::vector<std::string> nodos, save_state;
+                std::vector<std::string> nodos;
                 // Os auxiliares para guardar a matriz
                 int tmpi, **graph, **ret;
                 bool *mark;
@@ -43,7 +43,8 @@ class GrafoMatriz{
                 // talvez remover
                 void remove(std::string nodo);
                 std::string print();
-                std::vector<std::string> getState();
+                std::vector<std::string> save_state;
+                // std::vector<std::string> getState();
                
                 std::string Ordem();
                 // Verdadeiro tranverse

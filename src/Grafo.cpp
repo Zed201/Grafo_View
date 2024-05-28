@@ -311,9 +311,9 @@ void GrafoMatriz::save(){
         this->save_state.push_back(this->print(this->ret));
 }
 
-std::vector<std::string> GrafoMatriz::getState(){
-        return this->save_state;
-}
+// std::vector<std::string> GrafoMatriz::getState(){
+        // return this->save_state;
+// }
 
 int GrafoMatriz::nodos_qtd(){
         return this->qtdNodo; 

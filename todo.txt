@@ -1,3 +1,0 @@
-Mudar a logica dos gifs para usar o state
-Mudar __sep__ para tratar da lista de state
-Concertar o print e depois o gif que segue usando o drw
