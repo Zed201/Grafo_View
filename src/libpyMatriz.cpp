@@ -79,25 +79,15 @@ static PyObject* BFS(PyObject* self, PyObject* args){
 static PyObject* get_state(PyObject* self, PyObject* args){
         PyObject* ptr;
         if(!PyArg_ParseTuple(args, "O", &ptr)){return NULL;}
-        GrafoMatriz* gra = (GrafoMatriz *) ptr;
-        PyObject* lista = PyList_New(gra->nodos_qtd());
+        // criando a lista ele da bad_alloc, ate sem so printando ele tava dando bac_alloc
+        printf("Nada\n");
+        // GrafoMatriz* gra = (GrafoMatriz *) ptr;
 
-        if(!lista){
-                return nullptr;
-        }
-        std::vector<std::string> vec = gra->getState();
-        PyObject* tmp_Str;
+        // std::vector<std::string> vec = gra->getState();
+        // std::string temp = "";
+        // printf("%d\n", vec.size()) ;
 
-        for (size_t i = 0; i < vec.size(); i++) { 
-                tmp_Str = PyUnicode_FromString(vec[i].c_str());
-                if(!tmp_Str){
-                        Py_DecRef(lista);
-                        return nullptr;
-                }
-                PyList_SetItem(lista, i, tmp_Str);
-        }
-
-        return lista;
+        return Py_BuildValue("");
 }
 
 // remover um vertice

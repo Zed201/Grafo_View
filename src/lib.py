@@ -118,6 +118,9 @@ class Grafo:
             plt.draw()
         # plt.clf()
 
+    def states(self):
+        graph.getState(self.__grafo__)
+
     # def __gif__(self, file_name:str):
     #     padrao = re.compile(r'^Matriz_.*\.png$')
     #     caminhos = list(filter(lambda x: padrao.match(x), os.listdir(os.path.dirname(__file__))))
